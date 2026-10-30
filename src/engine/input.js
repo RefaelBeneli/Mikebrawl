@@ -9,6 +9,7 @@ const DEFAULT_BUTTONS = [
   { id: "jump", label: "J", x: 452, y: 246, r: 15, color: "#40b060", visible: true },
   { id: "skill1", label: "1", x: 364, y: 196, r: 15, color: "#c08020", visible: false },
   { id: "skill2", label: "2", x: 400, y: 168, r: 15, color: "#a040c0", visible: false },
+  { id: "mute", label: "SND", x: 462, y: 16, r: 11, color: "#606060", visible: true, system: true },
 ];
 
 const KEY_ACTIONS = {
@@ -21,6 +22,7 @@ const KEY_ACTIONS = {
   KeyC: "jump",
   KeyU: "skill1",
   KeyI: "skill2",
+  KeyM: "mute",
   Escape: "back",
   Enter: "confirm",
 };
@@ -47,8 +49,9 @@ export function createInput(renderer) {
   let controlsVisible = true;
   let joystick = null;
 
+  const isActive = (button) => button.visible && (button.system || controlsVisible);
   const visibleButtonAt = (point) =>
-    buttons.find((b) => b.visible && Math.hypot(point.x - b.x, point.y - b.y) <= b.r + BUTTON_TOUCH_PADDING);
+    buttons.find((b) => isActive(b) && Math.hypot(point.x - b.x, point.y - b.y) <= b.r + BUTTON_TOUCH_PADDING);
 
   function press(action) {
     if (!held.has(action)) pressed.add(action);
@@ -63,16 +66,14 @@ export function createInput(renderer) {
     event.preventDefault();
     listeners.forEach((listener) => listener());
     const point = renderer.toLogical(event.clientX, event.clientY);
-    taps.push(point);
-    if (!controlsVisible) return;
-
     const button = visibleButtonAt(point);
     if (button) {
       pointerButtons.set(event.pointerId, button.id);
       press(button.id);
       return;
     }
-    if (point.x < JOYSTICK_ZONE_X && !joystick) {
+    taps.push(point);
+    if (controlsVisible && point.x < JOYSTICK_ZONE_X && !joystick) {
       joystick = { pointerId: event.pointerId, originX: point.x, originY: point.y, knobX: point.x, knobY: point.y };
     }
   }
@@ -184,19 +185,30 @@ export function createInput(renderer) {
       if (button) button.visible = visible;
     },
 
+    setButtonLabel(id, label) {
+      const button = buttons.find((b) => b.id === id);
+      if (button) button.label = label;
+    },
+
     endFrame() {
       pressed.clear();
       taps = [];
     },
 
     render(r) {
+      buttons
+        .filter((b) => b.visible && b.system)
+        .forEach((b) => {
+          r.circle(b.x, b.y, b.r, b.color, 0.5);
+          r.text(b.label, b.x, b.y - 3, { align: "center", size: 6 });
+        });
       if (!controlsVisible) return;
       const baseX = joystick?.originX ?? 70;
       const baseY = joystick?.originY ?? 210;
       r.circle(baseX, baseY, JOYSTICK_RADIUS + 6, "#ffffff", 0.12);
       r.circle(joystick?.knobX ?? baseX, joystick?.knobY ?? baseY, 13, "#ffffff", joystick ? 0.45 : 0.25);
       buttons
-        .filter((b) => b.visible)
+        .filter((b) => b.visible && !b.system)
         .forEach((b) => {
           r.circle(b.x, b.y, b.r, b.color, held.has(b.id) ? 0.7 : 0.35);
           r.text(b.label, b.x, b.y - 4, { align: "center", size: 9, alpha: 0.9 });
