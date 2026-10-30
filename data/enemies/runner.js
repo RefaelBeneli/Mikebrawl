@@ -25,6 +25,9 @@ export default {
     },
   ],
   xp: 10,
-  drops: [],
+  drops: [
+    { item: "street_boots", chance: 0.12 },
+    { item: "focus_headband", chance: 0.08 },
+  ],
   sounds: { taunt: "runner_taunt", hurt: "runner_hurt", ko: "runner_ko" },
 };

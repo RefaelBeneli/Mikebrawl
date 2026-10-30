@@ -89,10 +89,12 @@ export function drawShadow(r, entity, camX, width = 14) {
   r.ellipse(entity.x - camX, entity.y, width * shrink, 3.5 * shrink, "#000", 0.35);
 }
 
-function placeholderFighter(r, f, sx, sy) {
+function placeholderFighter(r, f, sx, sy, gearColors) {
   const { w, h } = f.def.body;
-  const color = f.hitFlash > 0 ? "#ffffff" : f.def.sprite.placeholder;
-  const skin = f.hitFlash > 0 ? "#ffffff" : "#e0b090";
+  const flash = f.hitFlash > 0;
+  const color = flash ? "#ffffff" : gearColors.body ?? f.def.sprite.placeholder;
+  const skin = flash ? "#ffffff" : "#e0b090";
+  const fist = flash ? "#ffffff" : gearColors.hands ?? skin;
   const lying = (f.state === "down" || f.state === "dead") && f.stateTime > 0.12;
   if (lying) {
     r.rect(sx - h / 2, sy - 12, h - 14, 12, color);
@@ -102,21 +104,38 @@ function placeholderFighter(r, f, sx, sy) {
   const lean = f.state === "hurt" ? -f.facing * 4 : 0;
   const stride = f.state === "walk" ? Math.sin(f.stateTime * 14) * 4 : 0;
   const top = sy - h;
-  r.rect(sx - w / 2 + 2 + stride, sy - h * 0.45, w / 2 - 3, h * 0.45, "#222");
-  r.rect(sx + 1 - stride, sy - h * 0.45, w / 2 - 3, h * 0.45, "#2a2a2a");
+  const legH = h * 0.45;
+  const legW = w / 2 - 3;
+  const legs = [sx - w / 2 + 2 + stride, sx + 1 - stride];
+  legs.forEach((x, i) => {
+    r.rect(x, sy - legH, legW, legH, i ? "#2a2a2a" : "#222");
+    if (gearColors.feet) r.rect(x - 1, sy - 7, legW + 2, 7, gearColors.feet);
+  });
   r.rect(sx - w / 2 + lean, top + 14, w, h * 0.55 - 14, color);
   r.rect(sx - 7 + lean, top, 14, 14, skin);
   r.rect(sx + f.facing * 4 - 1 + lean, top + 4, 2, 2, "#000");
+  if (gearColors.head) r.rect(sx - 8 + lean, top + 1, 16, 3, gearColors.head);
   if (f.state === "attack" && f.move) {
     const { hitbox } = f.move;
     const box = attackBox(f, hitbox);
     const active = f.move.activeFrames.includes(f.animator.frame);
     const reach = (f.facing > 0 ? box.x + box.w - f.x : f.x - box.x) * (active ? 1 : 0.5);
     const limbX = f.facing > 0 ? sx : sx - reach;
-    r.rect(limbX, sy - hitbox.y - hitbox.h / 2 - 3, reach, 6, active ? skin : color);
+    const limbY = sy - hitbox.y - hitbox.h / 2 - 3;
+    r.rect(limbX, limbY, reach, 6, active ? skin : color);
+    r.rect(f.facing > 0 ? limbX + reach - 7 : limbX, limbY - 1, 7, 8, fist);
   } else {
-    r.rect(sx + f.facing * (w / 2 - 2) - 3 + lean, top + 20, 7, 7, skin);
+    r.rect(sx + f.facing * (w / 2 - 2) - 3 + lean, top + 20, 7, 7, fist);
   }
+}
+
+function gearPlaceholderColors(gear) {
+  return Object.fromEntries(gear.filter((item) => !getImage(item.layer)).map((item) => [item.slot, item.placeholder]));
+}
+
+function sortedGear(f) {
+  const order = f.def.gearDrawOrder ?? [];
+  return (f.gear ?? []).slice().sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot));
 }
 
 export function drawFighter(r, f, camX) {
@@ -126,11 +145,18 @@ export function drawFighter(r, f, camX) {
   const img = getImage(sprite.sheet);
   const sx = Math.round(f.x - camX);
   const sy = Math.round(f.y - f.z);
+  const gear = sortedGear(f);
   if (img) {
     const { col, row } = f.animator.cell;
-    r.cell(img, sprite.cellW, sprite.cellH, col, row, sx - sprite.cellW / 2, sy - sprite.cellH, { flip: f.facing < 0 });
+    const x = sx - sprite.cellW / 2;
+    const y = sy - sprite.cellH;
+    r.cell(img, sprite.cellW, sprite.cellH, col, row, x, y, { flip: f.facing < 0 });
+    gear.forEach((item) => {
+      const layer = getImage(item.layer);
+      if (layer) r.cell(layer, sprite.cellW, sprite.cellH, col, row, x, y, { flip: f.facing < 0 });
+    });
   } else {
-    placeholderFighter(r, f, sx, sy);
+    placeholderFighter(r, f, sx, sy, gearPlaceholderColors(gear));
   }
   if (f.telegraph > 0 && Math.floor(f.telegraph * 16) % 2 === 0) {
     r.text("!", sx, sy - f.def.body.h - 14, { align: "center", color: "#ff3030", size: 12 });
@@ -138,6 +164,22 @@ export function drawFighter(r, f, camX) {
   if (f.team !== "hero" && f.alive && f.hp < f.stats.hp && !f.def.boss) {
     r.rect(sx - 12, sy - f.def.body.h - 6, 24, 3, "#000");
     r.rect(sx - 12, sy - f.def.body.h - 6, (24 * f.hp) / f.stats.hp, 3, "#e04040");
+  }
+}
+
+export function drawPickup(r, pickup, camX) {
+  const x = Math.round(pickup.x - camX);
+  const bob = Math.round(Math.sin(pickup.t * 5) * 2);
+  const y = pickup.y - 18 + bob;
+  r.ellipse(x, pickup.y, 7, 2, "#000", 0.35);
+  if (Math.floor(pickup.t * 4) % 2 === 0) r.circle(x, y + 6, 12, "#fff6a0", 0.25);
+  const icon = getImage(pickup.item.icon);
+  if (icon) {
+    r.image(icon, x - 12, y - 6, 24, 24);
+  } else {
+    r.rect(x - 8, y - 2, 16, 16, "#000");
+    r.rect(x - 7, y - 1, 14, 14, pickup.item.placeholder);
+    r.text(pickup.item.slot[0].toUpperCase(), x, y + 2, { align: "center", color: "#fff" });
   }
 }
 

@@ -26,6 +26,9 @@ export default {
     },
   ],
   xp: 15,
-  drops: [],
+  drops: [
+    { item: "fight_gloves", chance: 0.12 },
+    { item: "lucky_tank", chance: 0.08 },
+  ],
   sounds: { taunt: "thug_taunt", hurt: "thug_hurt", ko: "thug_ko" },
 };
