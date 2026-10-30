@@ -11,8 +11,8 @@ export default {
     placeholder: "#3f8f4f",
   },
   body: { w: 24, h: 70 },
-  stats: { hp: 35, power: 6, defense: 1, atkSpeed: 1.3, speed: 75, crit: 0.08 },
-  ai: { type: "rusher", range: 24, windup: 0.28, cooldown: 1, retreat: 0.7 },
+  stats: { hp: 35, power: 8, defense: 1, atkSpeed: 1.3, speed: 75, crit: 0.08 },
+  ai: { type: "rusher", range: 24, windup: 0.28, cooldown: 0.8, retreat: 0.7 },
   moveset: { ground: { punch: "runner_jab" } },
   moves: [
     {

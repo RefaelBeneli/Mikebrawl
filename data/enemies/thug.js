@@ -11,8 +11,8 @@ export default {
     placeholder: "#8a4b2a",
   },
   body: { w: 32, h: 76 },
-  stats: { hp: 60, power: 9, defense: 2, atkSpeed: 0.8, speed: 38, crit: 0.05 },
-  ai: { type: "brawler", range: 30, windup: 0.45, cooldown: 1.6 },
+  stats: { hp: 60, power: 11, defense: 2, atkSpeed: 0.8, speed: 40, crit: 0.05 },
+  ai: { type: "brawler", range: 30, windup: 0.45, cooldown: 1.2 },
   moveset: { ground: { punch: "thug_haymaker" } },
   moves: [
     {
