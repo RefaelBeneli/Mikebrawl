@@ -13,6 +13,8 @@ import fightGloves from "./items/fight_gloves.js";
 import streetBoots from "./items/street_boots.js";
 import luckyTank from "./items/lucky_tank.js";
 import focusHeadband from "./items/focus_headband.js";
+import people from "./npcs/people.js";
+import animals from "./npcs/animals.js";
 
 const indexById = (list) => new Map(list.map((entry) => [entry.id, entry]));
 
@@ -21,6 +23,7 @@ export const enemies = indexById([thug, runner]);
 export const bosses = indexById([bigTony, viper, theChief]);
 export const levels = [level1, level2, level3];
 export const items = indexById([fightGloves, streetBoots, luckyTank, focusHeadband]);
+export const npcs = indexById([...people, ...animals]);
 
 const opponents = [...enemies.values(), ...bosses.values()];
 export const moves = indexById([...heroMoves, ...opponents.flatMap((def) => def.moves ?? [])]);
@@ -30,7 +33,7 @@ export const fx = {
 };
 
 export function imageSources() {
-  const sheets = [...heroes.values(), ...opponents].map((def) => def.sprite.sheet);
+  const sheets = [...heroes.values(), ...opponents, ...npcs.values()].map((def) => def.sprite.sheet);
   const itemArt = [...items.values()].flatMap((item) => [item.icon, item.layer]);
   const backgrounds = levels.flatMap((level) => [level.background?.far, level.background?.near]);
   return [...sheets, ...itemArt, ...backgrounds, ...Object.values(fx).map((effect) => effect.sheet)].filter(Boolean);
