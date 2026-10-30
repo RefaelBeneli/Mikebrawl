@@ -47,8 +47,6 @@ export function createEquipScene(game, { run }) {
   }
 
   return {
-    showControls: false,
-
     enter() {
       game.input.setControlsVisible(false);
     },
