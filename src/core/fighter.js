@@ -119,6 +119,7 @@ export class Fighter {
     switch (this.state) {
       case "idle":
       case "walk": {
+        this.faceToward(intent);
         if (this.buffer && this.cooldown <= 0 && this.startAttack(this.buffer.button)) return;
         this.vx = intent.x * speed;
         this.vy = intent.y * speed * DEPTH_SPEED_RATIO;
@@ -129,7 +130,6 @@ export class Fighter {
           this.emit("sound", { id: this.def.sounds?.jump });
           return;
         }
-        this.faceToward(intent);
         this.setState(intent.x || intent.y ? "walk" : "idle");
         return;
       }
