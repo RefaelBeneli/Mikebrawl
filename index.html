@@ -25,13 +25,21 @@
       -webkit-tap-highlight-color: transparent;
     }
     #game {
-      position: absolute;
+      position: fixed;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       touch-action: none;
+    }
+    #safe-area {
+      position: fixed;
+      top: env(safe-area-inset-top);
+      right: env(safe-area-inset-right);
+      bottom: env(safe-area-inset-bottom);
+      left: env(safe-area-inset-left);
+      pointer-events: none;
     }
     #rotate {
       display: none;
@@ -54,6 +62,7 @@
   </style>
 </head>
 <body>
+  <div id="safe-area"></div>
   <canvas id="game"></canvas>
   <div id="rotate"><span>&#x21bb;</span>Rotate your phone<br>to play Mikebrawl</div>
   <script type="module" src="src/main.js"></script>

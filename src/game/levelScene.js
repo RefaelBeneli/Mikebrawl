@@ -55,7 +55,9 @@ export function createLevelScene(game, { run }) {
   const bystanders = (level.npcs ?? []).map(({ id, x, y }) => new Npc({ def: npcs.get(id), x, y }));
 
   const world = {
-    viewWidth: WIDTH,
+    get viewWidth() {
+      return WIDTH;
+    },
 
     get hero() {
       return hero;

@@ -7,7 +7,7 @@ const INPUT_DELAY = 1;
 export function createGameOverScene(game, { run, sweat, won }) {
   const meta = game.save.loadMeta();
   let t = 0;
-  const buttons = [
+  const layout = () => [
     { kind: "gym", x: WIDTH / 2 - 150, y: 210, w: 140, h: 24, label: "GO TO THE GYM", color: "#2a5a6a" },
     { kind: "retry", x: WIDTH / 2 + 10, y: 210, w: 140, h: 24, label: won ? "PLAY AGAIN" : "TRY AGAIN", color: "#8a3a2a" },
   ];
@@ -42,7 +42,7 @@ export function createGameOverScene(game, { run, sweat, won }) {
         choose("gym");
         return;
       }
-      const button = tappedButton(taps, buttons);
+      const button = tappedButton(taps, layout());
       if (button) choose(button.kind);
     },
 
@@ -56,7 +56,7 @@ export function createGameOverScene(game, { run, sweat, won }) {
         r.text(label, WIDTH / 2 - 118, 98 + i * 18, { color: "#aaa" });
         r.text(value, WIDTH / 2 + 118, 98 + i * 18, { align: "right", color: i >= 3 ? "#80e0ff" : "#fff" });
       });
-      buttons.forEach((b) => drawButton(r, { ...b, disabled: t < INPUT_DELAY }));
+      layout().forEach((b) => drawButton(r, { ...b, disabled: t < INPUT_DELAY }));
     },
   };
 }

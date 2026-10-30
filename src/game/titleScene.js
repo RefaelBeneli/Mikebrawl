@@ -10,14 +10,12 @@ export function createTitleScene(game) {
   const meta = game.save.loadMeta();
   let t = 0;
 
-  const x = WIDTH / 2 - BUTTON_W / 2;
-  const buttons = [
+  const choices = [
     savedRun && { kind: "continue", label: `CONTINUE - ${levels[savedRun.levelIndex]?.name ?? "?"}`, color: "#2a6a3a" },
     { kind: "new", label: savedRun ? "NEW RUN" : "START", color: savedRun ? "#3a3a4a" : "#2a6a3a" },
     { kind: "gym", label: `GYM  (${meta.sweat} SWEAT)` },
-  ]
-    .filter(Boolean)
-    .map((b, i) => ({ ...b, x, y: 140 + i * (BUTTON_H + 8), w: BUTTON_W, h: BUTTON_H }));
+  ].filter(Boolean);
+  const layout = () => choices.map((b, i) => ({ ...b, x: WIDTH / 2 - BUTTON_W / 2, y: 140 + i * (BUTTON_H + 8), w: BUTTON_W, h: BUTTON_H }));
 
   function choose(kind) {
     game.sfx("ui_tap");
@@ -39,10 +37,10 @@ export function createTitleScene(game) {
     update(dt) {
       t += dt;
       if (game.input.pressed("confirm")) {
-        choose(buttons[0].kind);
+        choose(choices[0].kind);
         return;
       }
-      const button = tappedButton(game.input.consumeTaps(), buttons);
+      const button = tappedButton(game.input.consumeTaps(), layout());
       if (button) choose(button.kind);
     },
 
@@ -52,7 +50,7 @@ export function createTitleScene(game) {
       r.text("MIKEBRAWL", WIDTH / 2, 44, { align: "center", size: 32, color: "#ffd040", shadow: true });
       r.text("THE WALK HOME FROM THE GYM", WIDTH / 2, 86, { align: "center", color: "#ff9060" });
       if (Math.floor(t * 2) % 2 === 0) r.text("TAP TO CHOOSE", WIDTH / 2, 118, { align: "center", color: "#aaa" });
-      buttons.forEach((b) => drawButton(r, b));
+      layout().forEach((b) => drawButton(r, b));
       r.text(`RUNS ${meta.runs}   WINS ${meta.wins}`, WIDTH / 2, HEIGHT - 34, { align: "center", color: "#888" });
       r.text("No sound on iPhone? Turn off silent mode.", WIDTH / 2, HEIGHT - 18, { align: "center", color: "#666" });
     },

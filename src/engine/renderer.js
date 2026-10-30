@@ -1,20 +1,32 @@
-export const WIDTH = 480;
 export const HEIGHT = 270;
+export const MIN_WIDTH = 480;
+export const MAX_WIDTH = 720;
+// Live binding: the view widens to match the screen's shape, so read WIDTH at draw time, never cache it.
+export let WIDTH = MIN_WIDTH;
 
-export function createRenderer(canvas) {
-  canvas.width = WIDTH;
+export function viewWidthFor(screenWidth, screenHeight) {
+  const width = Math.round((HEIGHT * screenWidth) / screenHeight / 2) * 2;
+  return Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, width));
+}
+
+export function createRenderer(canvas, safeArea = document.getElementById("safe-area")) {
   canvas.height = HEIGHT;
   const ctx = canvas.getContext("2d");
 
   function fit() {
-    const scale = Math.min(window.innerWidth / WIDTH, window.innerHeight / HEIGHT);
+    const area = safeArea?.getBoundingClientRect() ?? { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+    WIDTH = viewWidthFor(area.width, area.height);
+    canvas.width = WIDTH;
+    const scale = Math.min(area.width / WIDTH, area.height / HEIGHT);
     canvas.style.width = `${Math.floor(WIDTH * scale)}px`;
     canvas.style.height = `${Math.floor(HEIGHT * scale)}px`;
+    canvas.style.left = `${area.left + area.width / 2}px`;
+    canvas.style.top = `${area.top + area.height / 2}px`;
     ctx.imageSmoothingEnabled = false;
   }
 
   window.addEventListener("resize", fit);
-  window.addEventListener("orientationchange", fit);
+  window.addEventListener("orientationchange", () => setTimeout(fit, 100));
   fit();
 
   return {

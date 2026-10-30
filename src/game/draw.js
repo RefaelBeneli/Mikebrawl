@@ -1,4 +1,4 @@
-import { WIDTH, HEIGHT } from "../engine/renderer.js";
+import { WIDTH, HEIGHT, MAX_WIDTH } from "../engine/renderer.js";
 import { getImage } from "../engine/assets.js";
 import { attackBox } from "../core/combat.js";
 import { createRng } from "../core/progression.js";
@@ -25,7 +25,7 @@ function buildScenery(level) {
   const rng = createRng(hashString(level.id));
   const { palette } = level.background;
   const skyline = [];
-  for (let x = 0; x < level.length * FAR_PARALLAX + WIDTH; x += 20 + rng() * 30) {
+  for (let x = 0; x < level.length * FAR_PARALLAX + MAX_WIDTH; x += 20 + rng() * 30) {
     skyline.push({ x, w: 24 + rng() * 40, h: 40 + rng() * 70 });
   }
   const buildings = [];
@@ -45,7 +45,8 @@ export function drawBackground(r, level, camX) {
   const scenery = sceneryCache.get(level.id);
 
   if (farImage) {
-    r.image(farImage, -camX * FAR_PARALLAX, 0);
+    const parallax = Math.min(1, Math.max(0, (farImage.width - WIDTH) / Math.max(1, level.length - WIDTH)));
+    r.image(farImage, -camX * parallax, 0);
   } else {
     const bandHeight = SIDEWALK_TOP / SKY_BANDS;
     for (let i = 0; i < SKY_BANDS; i += 1) {

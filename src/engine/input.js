@@ -1,17 +1,22 @@
+import { WIDTH } from "./renderer.js";
+
 const JOYSTICK_ZONE_X = 200;
 const JOYSTICK_RADIUS = 28;
 const DEAD_ZONE = 0.2;
 const BUTTON_TOUCH_PADDING = 6;
 
+// "right" = distance from the right edge, so buttons stay under the thumb on any screen width.
 const DEFAULT_BUTTONS = [
-  { id: "punch", label: "P", x: 402, y: 228, r: 20, color: "#e04040", visible: true },
-  { id: "kick", label: "K", x: 446, y: 196, r: 20, color: "#4070e0", visible: true },
-  { id: "jump", label: "J", x: 452, y: 246, r: 15, color: "#40b060", visible: true },
-  { id: "skill1", label: "1", x: 364, y: 196, r: 15, color: "#c08020", visible: false },
-  { id: "skill2", label: "2", x: 400, y: 168, r: 15, color: "#a040c0", visible: false },
-  { id: "bag", label: "BAG", x: 434, y: 16, r: 11, color: "#8a6a20", visible: true },
-  { id: "mute", label: "SND", x: 462, y: 16, r: 11, color: "#606060", visible: true, system: true },
+  { id: "punch", label: "P", right: 78, y: 228, r: 20, color: "#e04040", visible: true },
+  { id: "kick", label: "K", right: 34, y: 196, r: 20, color: "#4070e0", visible: true },
+  { id: "jump", label: "J", right: 28, y: 246, r: 15, color: "#40b060", visible: true },
+  { id: "skill1", label: "1", right: 116, y: 196, r: 15, color: "#c08020", visible: false },
+  { id: "skill2", label: "2", right: 80, y: 168, r: 15, color: "#a040c0", visible: false },
+  { id: "bag", label: "BAG", right: 46, y: 16, r: 11, color: "#8a6a20", visible: true },
+  { id: "mute", label: "SND", right: 18, y: 16, r: 11, color: "#606060", visible: true, system: true },
 ];
+
+const buttonX = (button) => WIDTH - button.right;
 
 const KEY_ACTIONS = {
   KeyJ: "punch",
@@ -53,7 +58,7 @@ export function createInput(renderer) {
 
   const isActive = (button) => button.visible && (button.system || controlsVisible);
   const visibleButtonAt = (point) =>
-    buttons.find((b) => isActive(b) && Math.hypot(point.x - b.x, point.y - b.y) <= b.r + BUTTON_TOUCH_PADDING);
+    buttons.find((b) => isActive(b) && Math.hypot(point.x - buttonX(b), point.y - b.y) <= b.r + BUTTON_TOUCH_PADDING);
 
   function press(action) {
     if (!held.has(action)) pressed.add(action);
@@ -201,8 +206,8 @@ export function createInput(renderer) {
       buttons
         .filter((b) => b.visible && b.system)
         .forEach((b) => {
-          r.circle(b.x, b.y, b.r, b.color, 0.5);
-          r.text(b.label, b.x, b.y - 3, { align: "center", size: 6 });
+          r.circle(buttonX(b), b.y, b.r, b.color, 0.5);
+          r.text(b.label, buttonX(b), b.y - 3, { align: "center", size: 6 });
         });
       if (!controlsVisible) return;
       const baseX = joystick?.originX ?? 70;
@@ -212,9 +217,9 @@ export function createInput(renderer) {
       buttons
         .filter((b) => b.visible && !b.system)
         .forEach((b) => {
-          r.circle(b.x, b.y, b.r, b.color, held.has(b.id) ? 0.7 : 0.35);
+          r.circle(buttonX(b), b.y, b.r, b.color, held.has(b.id) ? 0.7 : 0.35);
           const size = b.label.length > 1 ? 6 : 9;
-          r.text(b.label, b.x, b.y - size / 2, { align: "center", size, alpha: 0.9 });
+          r.text(b.label, buttonX(b), b.y - size / 2, { align: "center", size, alpha: 0.9 });
         });
     },
   };
