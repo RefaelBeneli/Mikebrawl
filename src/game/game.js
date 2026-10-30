@@ -1,5 +1,8 @@
 import { createSceneManager } from "../engine/scene.js";
 import { loadImages } from "../engine/assets.js";
+import { createAudio } from "../engine/audio.js";
+import sounds from "../../data/sounds.js";
+import music from "../../data/music.js";
 import { WIDTH, HEIGHT } from "../engine/renderer.js";
 import { imageSources, levels } from "../../data/registry.js";
 import { createLevelScene } from "./levelScene.js";
@@ -23,7 +26,10 @@ function newRun() {
 }
 
 export function createGame({ renderer, input }) {
-  const game = { renderer, input, sfx: () => {}, music: () => {} };
+  const audio = createAudio({ sounds, music });
+  const game = { renderer, input, audio, sfx: audio.sfx, music: audio.music };
+  const syncMuteLabel = () => input.setButtonLabel("mute", audio.settings.muted ? "OFF" : "SND");
+  syncMuteLabel();
   const scenes = createSceneManager(game);
   game.scenes = scenes;
 
@@ -49,6 +55,10 @@ export function createGame({ renderer, input }) {
 
   return {
     update(dt) {
+      if (input.pressed("mute")) {
+        audio.toggleMute();
+        syncMuteLabel();
+      }
       scenes.update(dt);
       input.endFrame();
     },
