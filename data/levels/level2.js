@@ -5,8 +5,6 @@ export default {
   music: "level2",
   bossMusic: "boss",
   background: {
-    far: "assets/backgrounds/level2_far.png",
-    near: "assets/backgrounds/level2_near.png",
     palette: {
       sky: ["#05081a", "#1a2a4a"],
       far: "#101830",

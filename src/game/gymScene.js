@@ -77,8 +77,13 @@ export function createGymScene(game) {
 
     render(r) {
       const background = getImage(GYM_BACKGROUND);
-      if (background) r.image(background, 0, 0);
-      else r.clear("#241a14");
+      r.clear("#241a14");
+      if (background) {
+        const scale = Math.max(WIDTH / background.width, HEIGHT / background.height);
+        const w = background.width * scale;
+        const h = background.height * scale;
+        r.image(background, (WIDTH - w) / 2, (HEIGHT - h) / 2, w, h);
+      }
       r.text("THE GYM", WIDTH / 2, 8, { align: "center", size: 14, color: "#ffd040", shadow: true });
       r.text(`SWEAT: ${meta.sweat}`, 16, 12, { color: "#80e0ff" });
       drawPanel(r, 10, 28, WIDTH - 20, gym.length * ROW_H + 16, "PERMANENT UPGRADES");
