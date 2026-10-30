@@ -16,6 +16,7 @@ Mike is a martial artist. On his way home from the gym, criminals block the stre
 | Death | Roguelite. Death restarts the run at level 1. Mike's level and gear reset. |
 | Meta progress | Each run earns Sweat Points. Mike spends them at the gym on small permanent stat boosts. |
 | Publish | itch.io (zip upload) plus GitHub Pages. Installable PWA ("Add to Home Screen"), works offline. |
+| Sound | 8-bit music per level/boss/menu plus voice and hit sounds for Mike, criminals and NPCs. Code-made chiptune and synth placeholders; real MP3 files in `assets/audio/` replace them automatically. Mute + music/SFX volume, saved. |
 
 ## 1. Code structure
 
@@ -86,3 +87,16 @@ The joystick, buttons, bars and menus are drawn in code.
 - New level: add `data/levels/levelN.js`, add it to `levels` in the registry. New enemy: add a file in `data/enemies/`, register it, reference it from a level's waves. The registry test fails if any id reference is broken.
 - Publishing: GitHub Pages (repo must be public or on a paid GitHub plan) and an itch.io HTML5 zip built by `scripts/build-itch.sh`.
 - Testing: `npm test` (runs `node --test`, no installs) for stats, damage, XP, drops, inventory, fighter states, run state, registry integrity. Manual check on iPhone Safari and Android Chrome.
+
+## 5. Sound
+
+Sound works like sprites: every sound has an id, an optional MP3 file, and a code-made fallback. Full list and generator prompts: [docs/audio/prompts.md](../../audio/prompts.md).
+
+- `src/engine/audio.js`: one Web Audio context, unlocked on the first tap (required by iOS/Android). Separate music and SFX volume buses, mute toggle, settings saved in the browser.
+- `src/engine/chiptune.js`: a tiny sequencer that plays song data (tempo, lead, bass, drum patterns) with square/triangle/noise channels. Used when a music file is missing.
+- `data/sounds.js`: SFX id -> `{ file, synth }`. `data/music.js`: track id -> `{ file, song }`. Game code only calls `sfx("thug_hurt")` or `music("level1")`.
+- Content files reference sound ids: an enemy has `sounds: { taunt, hurt, ko }`, an NPC has `sounds: { flee }`, a level has `music` and `bossMusic`.
+- Voices play with slight random pitch so repeated grunts don't sound identical. Max 1 voice per fighter at a time.
+- Music crossfades between tracks (level -> boss -> victory).
+- Files: MP3 (plays on every phone browser), mono for SFX, music loops seamlessly.
+- iPhone note: the ring/silent switch mutes web audio. The title screen shows a hint.
