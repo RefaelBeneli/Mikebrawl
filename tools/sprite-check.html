@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mikebrawl sprite check</title>
+<style>
+  body { margin: 0; padding: 16px; background: #22222e; color: #ddd; font: 14px system-ui, sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 20px; }
+  h2 { margin: 24px 0 8px; font-size: 16px; color: #ffd040; }
+  .row { display: flex; gap: 12px; align-items: flex-start; margin: 6px 0; }
+  .name { width: 330px; flex: none; font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; }
+  .ok { color: #7fdc7f; }
+  .warn { color: #ffb040; }
+  .missing { color: #777; }
+  canvas { image-rendering: pixelated; background: repeating-conic-gradient(#3a3a4a 0 25%, #30303e 0 50%) 0 0 / 16px 16px; }
+</style>
+</head>
+<body>
+<h1>Sprite check</h1>
+<div id="summary">Loading...</div>
+<div id="out"></div>
+<script type="module">
+import { loadAssets, getImage } from "../src/engine/assets.js";
+import { assetJobs } from "../src/game/game.js";
+import { foregroundMask, findFigures } from "../src/engine/spriteProcess.js";
+
+const ZOOM = 2;
+const out = document.getElementById("out");
+// Asset paths are relative to the game root, one folder up from this page.
+const jobs = assetJobs().map((job) => ({ ...job, src: `../${job.src}`, ref: job.ref && `../${job.ref}` }));
+await loadAssets(jobs);
+
+function rawPoseCount(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = img.width;
+      c.height = img.height;
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, c.width, c.height);
+      resolve(findFigures(foregroundMask(data), c.width, c.height).length);
+    };
+    img.onerror = () => resolve(0);
+    img.src = src;
+  });
+}
+
+function preview(job, img) {
+  const c = document.createElement("canvas");
+  c.width = img.width * ZOOM;
+  c.height = img.height * ZOOM;
+  const ctx = c.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  const under = job.ref && getImage(job.ref);
+  if (under) {
+    ctx.globalAlpha = 0.35;
+    ctx.drawImage(under, 0, 0, c.width, c.height);
+    ctx.globalAlpha = 1;
+  }
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  if (job.kind === "strip" && job.align !== "center") {
+    ctx.fillStyle = "#ff0";
+    for (let x = 0; x < img.width; x += job.cellW) ctx.fillRect(x * ZOOM + 2, (job.cellH - 1) * ZOOM, job.cellW * ZOOM - 4, 1);
+  }
+  return c;
+}
+
+const section = (src) => {
+  if (src.includes("/gear/")) return "Gear on Mike (faded Mike underneath)";
+  if (src.includes("/items/")) return "Item icons";
+  if (src.includes("/backgrounds/")) return "Backgrounds";
+  if (src.includes("/fx/")) return "Effects";
+  return `Character: ${src.split("/").at(-2)}`;
+};
+
+let found = 0;
+let warnings = 0;
+let current = "";
+for (const job of jobs) {
+  const title = section(job.src);
+  if (title !== current) {
+    current = title;
+    out.insertAdjacentHTML("beforeend", `<h2>${title}</h2>`);
+  }
+  const row = document.createElement("div");
+  row.className = "row";
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = job.src.slice(3);
+  row.append(name);
+  const img = getImage(job.src);
+  const status = document.createElement("div");
+  if (!img) {
+    status.className = "missing";
+    status.textContent = "missing (game draws a placeholder)";
+    name.append(document.createElement("br"), status);
+  } else {
+    found += 1;
+    status.className = "ok";
+    status.textContent = "ok";
+    if (job.kind === "strip" && job.poses) {
+      const count = await rawPoseCount(job.src);
+      if (count !== job.poses) {
+        warnings += 1;
+        status.className = "warn";
+        status.textContent = `found ${count} poses, needs ${job.poses}: check the result below, or regenerate with more space between poses`;
+      } else status.textContent = `ok, ${count} poses`;
+    }
+    name.append(document.createElement("br"), status);
+    row.append(preview(job, img));
+  }
+  out.append(row);
+}
+document.getElementById("summary").textContent = `${found} of ${jobs.length} files found, ${warnings} to check. Yellow lines are the floor: feet should touch them.`;
+document.title = "ready";
+</script>
+</body>
+</html>

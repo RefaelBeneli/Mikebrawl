@@ -1,217 +1,210 @@
-# Sprite prompts
+# Nano Banana prompts
 
-One copy-paste prompt per sheet. Save each result at the listed path. The game loads it automatically; until then it draws a placeholder.
+Walkthrough first: [GUIDE.md](GUIDE.md). Every prompt below is complete: copy it, paste it, attach what it says.
 
-## Rules for every sheet
+- **Anchor prompts** make one clean picture of a character. Save it on your computer.
+- **Strip prompts** need that anchor attached. Save the result at the listed path.
 
-1. **Transparent background** (PNG with alpha). If the generator can't, use one flat color and remove it after.
-2. **Fixed grid.** Every frame sits in a same-size cell. One animation per row, frames left to right. Empty cells at the end of short rows stay transparent.
-3. **Face right.** The game mirrors for left.
-4. **Feet on the bottom line** of every cell and the character horizontally centered. Same character size in every frame.
-5. **Real pixel size.** Generators usually output huge "fake pixel" images. Shrink to the exact sheet size with **nearest-neighbor** resizing (no blur), e.g. in Aseprite, Photoshop (Image Size, "Nearest Neighbor"), or `magick in.png -filter point -resize 864x960! out.png`.
-6. If a generator can't do a whole sheet, generate one row at a time with the same prompt, then paste rows into the grid.
-7. **Mike's likeness:** attach 1-3 photos of the real Mike as a reference image on every Mike and gear prompt. The text description is a backup.
-
-Shared style line (already included in each prompt):
-`16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background`
+Keep this file in sync with `data/anims.js` (pose counts).
 
 ---
 
 ## Mike
 
-### Mike base body
-- File: `assets/sprites/mike/base.png`
-- Sheet: 864x960 (9 columns x 10 rows of 96x96)
+### Anchor (attach 2-3 photos of Mike)
 
 ```
-Pixel art sprite sheet of a single character, Mike, a muscular real-life martial artist. Match the face, hair and beard of the attached reference photo exactly. Short dark messy wavy hair, short full dark beard, thick dark eyebrows, tan olive skin, athletic muscular build. Outfit: shirtless, black jogger pants with a drawstring, plain dark grey sneakers with light soles, bare hands with no wraps and no gloves, no headband. Character faces right. Grid of 96x96 pixel cells, 9 columns, 10 rows, one animation per row, frames left to right, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: idle fighting stance breathing, 4 frames. Row 2: walk cycle in guard, 6 frames. Row 3: 3-hit punch combo, 9 frames (jab 3 frames, cross 3 frames, strong uppercut 3 frames). Row 4: front kick, 4 frames (chamber, extend, full extension, retract). Row 5: jump, 3 frames (crouch takeoff, in air knees tucked, landing). Row 6: flying jump kick in mid air, 2 frames. Row 7: getting hit, 2 frames (head snaps back, recoil). Row 8: knocked down, 3 frames (falling backward, hitting the ground, lying flat on back). Row 9: getting up, 3 frames (on one knee, rising, back in stance). Row 10: victory pose fist raised, 2 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
+Turn the person in the attached photos into one full-body pixel art video game character named Mike. Match his face, hair and beard exactly: short dark messy wavy hair, short full dark beard, thick dark eyebrows, tan olive skin, athletic muscular martial artist build. Outfit: shirtless, black jogger pants with a drawstring, plain dark grey sneakers with light soles, bare hands, no headband. Standing in a fighting stance, fists up, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no text. No pink or purple on the character.
 ```
 
-### Gear layers (draw ONLY the item, on Mike's exact grid)
-
-Tip: generate with the Mike base sheet attached as the reference, then erase everything except the item. The item must line up pixel-perfect with Mike's body in every frame.
-
-#### Fight Gloves (hands)
-- File: `assets/sprites/gear/fight_gloves.png` - Sheet: 864x960 (same grid as Mike base)
+### `assets/sprites/mike/idle.png` (2 poses)
 
 ```
-Pixel art overlay sprite sheet containing ONLY a pair of red fingerless MMA fight gloves with black wrist straps, positioned exactly on the hands of the attached Mike sprite sheet in every frame. Everything else fully transparent: no body, no face, no clothes, no background. Same grid as the reference: 96x96 cells, 9 columns, 10 rows, same poses frame by frame (idle 4, walk 6, punch combo 9, kick 4, jump 3, jump kick 2, hit 2, knocked down 3, get up 3, victory 2). Character faces right. 16-bit retro beat 'em up pixel art, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 2 poses, left to right: 1) fighting stance, fists up; 2) the same stance breathing, shoulders slightly lower. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 16:9 image.
 ```
 
-#### Street Boots (feet)
-- File: `assets/sprites/gear/street_boots.png` - Sheet: 864x960
+### `assets/sprites/mike/walk.png` (4 poses)
 
 ```
-Pixel art overlay sprite sheet containing ONLY a pair of black leather combat boots with dark red laces, covering the feet and ankles exactly where the feet are in the attached Mike sprite sheet, in every frame. Everything else fully transparent: no legs, no body, no background. Same grid as the reference: 96x96 cells, 9 columns, 10 rows, same poses frame by frame (idle 4, walk 6, punch combo 9, kick 4, jump 3, jump kick 2, hit 2, knocked down 3, get up 3, victory 2). Character faces right. 16-bit retro beat 'em up pixel art, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 4 poses, left to right: a 4-step walk cycle walking forward with fists up in guard (1 left foot forward, 2 legs passing, 3 right foot forward, 4 legs passing). Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 16:9 image.
 ```
 
-#### Lucky Tank Top (body)
-- File: `assets/sprites/gear/lucky_tank.png` - Sheet: 864x960
+### `assets/sprites/mike/punch.png` (6 poses)
 
 ```
-Pixel art overlay sprite sheet containing ONLY a fitted heather grey sleeveless tank top, worn on the torso exactly where the torso is in the attached Mike sprite sheet, stretching and folding with each pose. Arms, head, pants and background fully transparent. Same grid as the reference: 96x96 cells, 9 columns, 10 rows, same poses frame by frame (idle 4, walk 6, punch combo 9, kick 4, jump 3, jump kick 2, hit 2, knocked down 3, get up 3, victory 2). Character faces right. 16-bit retro beat 'em up pixel art, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 6 poses, left to right: 1) guard stance ready to jab; 2) left jab, arm fully extended forward; 3) shoulders turning, loading a right cross; 4) right cross, arm fully extended forward; 5) crouched low, loading an uppercut; 6) powerful uppercut, fist fully extended upward. Feet stay in place. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 21:9 image.
 ```
 
-#### Focus Headband (head)
-- File: `assets/sprites/gear/focus_headband.png` - Sheet: 864x960
+### `assets/sprites/mike/kick.png` (3 poses)
 
 ```
-Pixel art overlay sprite sheet containing ONLY a red cloth martial arts headband tied around the forehead with two short tails flowing behind the head, placed exactly on the head of the attached Mike sprite sheet in every frame, tails reacting to movement. Face, hair, body and background fully transparent. Same grid as the reference: 96x96 cells, 9 columns, 10 rows, same poses frame by frame (idle 4, walk 6, punch combo 9, kick 4, jump 3, jump kick 2, hit 2, knocked down 3, get up 3, victory 2). Character faces right. 16-bit retro beat 'em up pixel art, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 3 poses, left to right: 1) knee raised high, chambering a front kick; 2) front kick, leg fully extended forward at stomach height; 3) kicking leg coming back down. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 16:9 image.
 ```
 
-### Item icons
-- Files: `assets/sprites/items/fight_gloves_icon.png`, `street_boots_icon.png`, `lucky_tank_icon.png`, `focus_headband_icon.png`
-- Each 24x24. Generate at 192x192 and shrink with nearest-neighbor.
+### `assets/sprites/mike/jump.png` (3 poses)
 
 ```
-Single pixel art inventory icon of [ITEM], centered, slight 3/4 view, bold dark outline, bright readable colors, 24x24 pixel game icon style, 16-bit retro RPG item icon, crisp hard pixel edges, no anti-aliasing, no text, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 3 poses, left to right: 1) crouching, about to jump; 2) in the air with knees tucked up; 3) flying side kick in mid air, one leg fully extended forward. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 16:9 image.
 ```
 
-Replace `[ITEM]` with: `red fingerless MMA fight gloves with black wrist straps` / `black leather combat boots with dark red laces` / `folded heather grey tank top` / `red cloth martial arts headband with two tails`.
-
----
-
-## Enemies
-
-### Thug (slow, hits hard)
-- File: `assets/sprites/enemies/thug.png` - Sheet: 576x576 (6 columns x 6 rows of 96x96)
+### `assets/sprites/mike/fall.png` (5 poses)
 
 ```
-Pixel art sprite sheet of a single street thug enemy: big heavy-set bald man, thick neck, stubble, black leather jacket over a white t-shirt, dark jeans, brown work boots, unarmed, angry face. Character faces right. Grid of 96x96 pixel cells, 6 columns, 6 rows, one animation per row, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: idle menacing stance, 4 frames. Row 2: heavy walk, 6 frames. Row 3: slow wide haymaker punch, 4 frames (wind up far back, swing, impact, recover). Row 4: getting hit, 2 frames. Row 5: knocked down, 3 frames (falling backward, hitting the ground, lying flat). Row 6: getting up, 3 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
+Using the attached character, Mike, exactly as he looks, draw one horizontal row of 5 poses, left to right: 1) getting hit, head snapped back, body recoiling; 2) falling backward; 3) lying flat on his back on the ground; 4) on one knee, pushing himself up; 5) almost standing, rising back into his guard. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 21:9 image.
 ```
 
-### Runner (fast, weak)
-- File: `assets/sprites/enemies/runner.png` - Sheet: 576x576
+### `assets/sprites/mike/victory.png` (1 pose)
 
 ```
-Pixel art sprite sheet of a single fast street punk enemy: skinny young man, green zip hoodie with the hood down, short bleached spiky hair, ripped grey jeans, white sneakers, unarmed, cocky grin. Character faces right. Grid of 96x96 pixel cells, 6 columns, 6 rows, one animation per row, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: bouncy idle stance, 4 frames. Row 2: fast run, 6 frames. Row 3: quick jab, 4 frames (lean in, jab, impact, pull back). Row 4: getting hit, 2 frames. Row 5: knocked down, 3 frames (falling backward, hitting the ground, lying flat). Row 6: getting up, 3 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
+Using the attached character, Mike, exactly as he looks, draw him in one victory pose: standing tall, one fist raised high in the air, proud smile, facing right. Whole body visible. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Square 1:1 image.
 ```
 
 ---
 
-## Bosses (128x128 cells, 6 columns x 8 rows = 768x1024)
+## Gear (worn by Mike)
 
-### Level 1 boss: Big Tony
-- File: `assets/sprites/bosses/big_tony.png`
+Make 7 images per item: attach each finished Mike strip (`idle`, `walk`, `punch`, `kick`, `jump`, `fall`, `victory`) one at a time and paste the item's prompt. Save with the same file name in the item's folder, e.g. attach `mike/kick.png` → save `gear/street_boots/kick.png`.
 
-```
-Pixel art sprite sheet of a single boss character, Big Tony: a huge towering gang enforcer, shaved head, thick black goatee, gold chain, tight black tank top, giant arms with tattoos, grey cargo pants, black boots, unarmed. Much bigger than a normal man. Character faces right. Grid of 128x128 pixel cells, 6 columns, 8 rows, one animation per row, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: idle stance cracking knuckles, 4 frames. Row 2: heavy stomping walk, 6 frames. Row 3: double-fist hammer punch, 4 frames. Row 4: getting hit, 2 frames. Row 5: knocked down, 3 frames. Row 6: getting up, 3 frames. Row 7: special attack, a running shoulder charge, 6 frames (lower shoulder, start running, charging, charging, impact, stop). Row 8: enrage, 6 frames (roars and flexes, red angry face, steam). 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
-```
-
-### Level 2 boss: Viper
-- File: `assets/sprites/bosses/viper.png`
+### `assets/sprites/gear/fight_gloves/<file>.png`
 
 ```
-Pixel art sprite sheet of a single boss character, Viper: a lean fast kickboxer gang leader, red bandana on the head, long black ponytail, green snake tattoo winding up one arm, black sleeveless shirt, red Thai boxing shorts over black leggings, bare feet with wraps, unarmed. Slightly taller than a normal man. Character faces right. Grid of 128x128 pixel cells, 6 columns, 8 rows, one animation per row, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: bouncing kickboxing stance, 4 frames. Row 2: quick shuffle walk, 6 frames. Row 3: fast roundhouse kick, 4 frames. Row 4: getting hit, 2 frames. Row 5: knocked down, 3 frames. Row 6: getting up, 3 frames. Row 7: special attack, leaping flying knee across the screen, 6 frames (crouch, jump, flying knee, flying knee, landing, recover). Row 8: enrage, 6 frames (wipes blood from lip, snake-like glare, hisses, stance). 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
+Edit the attached image. Put red fingerless MMA fight gloves with black wrist straps on the man's hands in every pose. Then remove the man completely and keep ONLY the gloves, in exactly the same position, size and angle, on the same solid flat magenta #FF00FF background. Do not move, resize or crop anything. Same image size. Pixel art, crisp pixels, dark outline.
 ```
 
-### Level 3 boss: The Chief
-- File: `assets/sprites/bosses/the_chief.png`
+### `assets/sprites/gear/street_boots/<file>.png`
 
 ```
-Pixel art sprite sheet of a single final boss character, The Chief: a massive crime boss, slicked-back grey hair, scarred face, thick grey mustache, torn white dress shirt with rolled-up sleeves, loose red tie, black suit pants, polished shoes, giant fists, unarmed. Much bigger than a normal man. Character faces right. Grid of 128x128 pixel cells, 6 columns, 8 rows, one animation per row, feet on the bottom edge of every cell, character centered and the same size in every frame. Row 1: idle stance adjusting tie, 4 frames. Row 2: slow confident walk, 6 frames. Row 3: heavy straight punch, 4 frames. Row 4: getting hit, 2 frames. Row 5: knocked down, 3 frames. Row 6: getting up, 3 frames. Row 7: special attack, jumps and slams both fists into the ground making a shockwave, 6 frames (crouch, jump up, fists raised, slam, shockwave dust, recover). Row 8: enrage, 6 frames (rips shirt sleeves, veins bulging, roars). 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
+Edit the attached image. Put black leather combat boots with dark red laces on the man's feet in every pose. Then remove the man completely and keep ONLY the boots, in exactly the same position, size and angle, on the same solid flat magenta #FF00FF background. Do not move, resize or crop anything. Same image size. Pixel art, crisp pixels, dark outline.
 ```
+
+### `assets/sprites/gear/lucky_tank/<file>.png`
+
+```
+Edit the attached image. Dress the man in a fitted heather grey sleeveless tank top in every pose, following his body as it twists and bends. Then remove the man completely and keep ONLY the tank top, in exactly the same position, size and angle, on the same solid flat magenta #FF00FF background. Do not move, resize or crop anything. Same image size. Pixel art, crisp pixels, dark outline.
+```
+
+### `assets/sprites/gear/focus_headband/<file>.png`
+
+```
+Edit the attached image. Tie a red cloth martial arts headband around the man's forehead in every pose, with two short tails flowing behind his head. Then remove the man completely and keep ONLY the headband, in exactly the same position, size and angle, on the same solid flat magenta #FF00FF background. Do not move, resize or crop anything. Same image size. Pixel art, crisp pixels, dark outline.
+```
+
+If the edit moves things, split it in two: send the first sentence, then in the same chat send "Now remove the man and everything else, keep only the [item] exactly where it is, on solid flat magenta #FF00FF."
+
+### Item icons: `assets/sprites/items/<item>_icon.png`
+
+```
+One pixel art inventory icon of [ITEM], centered, slight 3/4 view, bold dark outline, bright readable colors, 16-bit retro game item icon, crisp pixels. Solid flat magenta #FF00FF background, no shadow, no text. No pink or purple on the item. Square 1:1 image.
+```
+
+| File | Replace `[ITEM]` with |
+| --- | --- |
+| `fight_gloves_icon.png` | red fingerless MMA fight gloves with black wrist straps |
+| `street_boots_icon.png` | black leather combat boots with dark red laces |
+| `lucky_tank_icon.png` | a folded heather grey tank top |
+| `focus_headband_icon.png` | a red cloth martial arts headband with two tails |
 
 ---
 
-## Background characters (NPCs)
+## Enemies, bosses and NPCs
 
-People: 96x96 cells, 6 columns x 2 rows = 576x192. Animals: 32x32 cells, 6 columns x 2 rows = 192x64.
+Each character: first its anchor (no attachment), then its strips with the anchor attached.
 
-### Scared woman
-- File: `assets/sprites/npcs/scared_woman.png`
+### Character descriptions
 
-```
-Pixel art sprite sheet of a single background character: a young woman in a beige trench coat holding a handbag, shoulder-length brown hair, worried expression. Character faces right. Grid of 96x96 pixel cells, 6 columns, 2 rows, feet on the bottom edge of every cell, centered, same size in every frame. Row 1: idle, nervously looking around and clutching her bag, 4 frames. Row 2: running away scared, hands up, 6 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
-```
+Use these in the anchor template below.
 
-### Old man
-- File: `assets/sprites/npcs/old_man.png`
+| Folder | Description |
+| --- | --- |
+| `thug` | a big heavy-set bald street thug, thick neck, stubble, black leather jacket over a white t-shirt, dark jeans, brown work boots, unarmed, angry face |
+| `runner` | a skinny fast street punk, green zip hoodie with the hood down, short bleached spiky hair, ripped grey jeans, white sneakers, unarmed, cocky grin |
+| `big_tony` | Big Tony, a huge towering gang enforcer, much bigger than a normal man, shaved head, thick black goatee, gold chain, tight black tank top, giant tattooed arms, grey cargo pants, black boots, unarmed |
+| `viper` | Viper, a lean fast kickboxer gang leader, slightly taller than a normal man, red bandana, long black ponytail, green snake tattoo up one arm, black sleeveless shirt, red Thai boxing shorts over black leggings, wrapped bare feet, unarmed |
+| `the_chief` | The Chief, a massive crime boss, much bigger than a normal man, slicked-back grey hair, scarred face, thick grey mustache, torn white dress shirt with rolled-up sleeves, loose red tie, black suit pants, polished shoes, giant fists |
+| `scared_woman` | a young woman in a beige trench coat holding a handbag, shoulder-length brown hair, worried face |
+| `old_man` | a hunched old man with white hair and a flat cap, brown cardigan, grey trousers, walking cane |
+| `homeless_man` | a homeless man with a long scruffy beard, beanie hat, worn green army jacket, fingerless gloves, carrying a rolled blanket |
+| `cat` | a small black alley cat with yellow eyes |
+| `rat` | a small grey street rat with a long pink tail (the tail is the only pink allowed: make it a dull grey-pink) |
 
-```
-Pixel art sprite sheet of a single background character: a hunched old man with white hair and a flat cap, brown cardigan, grey trousers, walking cane. Character faces right. Grid of 96x96 pixel cells, 6 columns, 2 rows, feet on the bottom edge of every cell, centered, same size in every frame. Row 1: idle, leaning on his cane and shaking his head, 4 frames. Row 2: hobbling away as fast as he can, waving the cane, 6 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
-```
-
-### Homeless man
-- File: `assets/sprites/npcs/homeless_man.png`
-
-```
-Pixel art sprite sheet of a single background character: a homeless man with a long scruffy beard, beanie hat, worn green army jacket, fingerless gloves, carrying a rolled blanket. Character faces right. Grid of 96x96 pixel cells, 6 columns, 2 rows, feet on the bottom edge of every cell, centered, same size in every frame. Row 1: idle, standing and warming his hands, 4 frames. Row 2: shuffling away quickly with his blanket, 6 frames. 16-bit retro beat 'em up pixel art like Golden Axe and Streets of Rage, side view, crisp hard pixel edges, limited palette, dark outline, no anti-aliasing, no blur, no text, no watermark, transparent background.
-```
-
-### Cat
-- File: `assets/sprites/npcs/cat.png`
+### Anchor template
 
 ```
-Pixel art sprite sheet of a small black alley cat with yellow eyes. Faces right. Grid of 32x32 pixel cells, 6 columns, 2 rows, paws on the bottom edge of every cell, centered, same size in every frame. Row 1: idle, sitting and licking its paw, tail swishing, 4 frames. Row 2: running away fast, 6 frames. 16-bit retro pixel art, side view, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+One full-body pixel art video game character: [DESCRIPTION]. Standing, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no text. No pink or purple on the character.
 ```
 
-### Rat
-- File: `assets/sprites/npcs/rat.png`
+### Strip template
+
+Attach the anchor, then paste this with `[N]` and `[POSES]` from the tables below.
 
 ```
-Pixel art sprite sheet of a small grey street rat with a long pink tail. Faces right. Grid of 32x32 pixel cells, 6 columns, 2 rows, feet on the bottom edge of every cell, centered, same size in every frame. Row 1: idle, sniffing the ground, whiskers twitching, 4 frames. Row 2: scurrying away fast, 6 frames. 16-bit retro pixel art, side view, crisp hard pixel edges, dark outline, no anti-aliasing, no blur, no text, transparent background.
+Using the attached character exactly as it looks, draw one horizontal row of [N] poses, left to right: [POSES]. Wide empty gaps between poses, poses never touch, whole body visible in every pose, same character and same size in every pose, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no gradient, no text. No pink or purple on the character. Wide 16:9 image.
 ```
+
+### Thug and Runner: `assets/sprites/thug/…`, `assets/sprites/runner/…`
+
+| File | N | POSES |
+| --- | --- | --- |
+| `idle.png` | 2 | 1) menacing fighting stance; 2) the same stance breathing, shoulders slightly lower |
+| `walk.png` | 4 | a 4-step walk cycle walking forward (1 left foot forward, 2 legs passing, 3 right foot forward, 4 legs passing) |
+| `attack.png` | 3 | thug: 1) winding up a wide haymaker far back; 2) haymaker punch fully extended; 3) recovering. runner: 1) leaning in; 2) quick jab fully extended; 3) pulling back |
+| `fall.png` | 5 | 1) getting hit, head snapped back; 2) falling backward; 3) lying flat on the back on the ground; 4) on one knee pushing up; 5) almost standing |
+
+### Bosses: `assets/sprites/big_tony/…`, `viper/…`, `the_chief/…`
+
+Same `idle`, `walk` and `fall` as the thug, plus:
+
+| File | N | POSES |
+| --- | --- | --- |
+| `attack.png` | 3 | Big Tony: 1) both fists raised overhead; 2) double-fist hammer punch slamming forward; 3) recovering. Viper: 1) chambering a roundhouse; 2) roundhouse kick fully extended at head height; 3) leg returning. The Chief: 1) pulling a fist back; 2) heavy straight punch fully extended; 3) recovering |
+| `special.png` | 4 | Big Tony: 1) lowering his shoulder; 2) starting to run; 3) full-speed shoulder charge; 4) stopping. Viper: 1) crouching; 2) leaping; 3) flying knee in mid air; 4) landing. The Chief: 1) crouching; 2) jumping with both fists raised; 3) slamming both fists into the ground with a dust shockwave; 4) standing back up |
+| `enrage.png` | 2 | 1) roaring with fists clenched, angry red face; 2) flexing, veins bulging, steam rising |
+
+### NPCs: `assets/sprites/scared_woman/…`, `old_man/…`, `homeless_man/…`, `cat/…`, `rat/…`
+
+| File | N | POSES |
+| --- | --- | --- |
+| `idle.png` | 2 | woman: nervously clutching her bag, looking around. old man: leaning on his cane, shaking his head. homeless man: warming his hands. cat: sitting, tail up, then tail down. rat: sniffing the ground, nose up then down |
+| `flee.png` | 4 | a 4-step running cycle, running away scared (people: hands up in panic) |
 
 ---
 
 ## Effects
 
-### Hit spark
-- File: `assets/sprites/fx/hit_spark.png` - Sheet: 96x32 (3 frames of 32x32)
+### `assets/sprites/fx/hit_spark.png` (3 poses)
 
 ```
-Pixel art animation strip of a punch impact spark effect, white and yellow starburst with orange edges, 3 frames left to right in 32x32 pixel cells: small flash, big starburst, fading sparks. 16-bit retro beat 'em up effect, crisp hard pixel edges, no anti-aliasing, no text, transparent background.
+Pixel art punch impact effect, one horizontal row of 3 separate frames, left to right: 1) small white flash; 2) big white and yellow starburst with orange edges; 3) fading orange sparks. Wide empty gaps between frames, frames never touch. 16-bit retro beat 'em up effect, crisp pixels. Solid flat magenta #FF00FF background, no text. Wide 16:9 image.
 ```
 
 ---
 
 ## Backgrounds
 
-Two layers per level. The **far** layer scrolls at half speed. The **near** layer scrolls with the street. The near layer: buildings/walls from the top down to y=150, sidewalk from y=150 to y=180, street/ground from y=180 to the bottom (270). Opaque, no transparency needed except the far layer can be fully opaque too.
+Each level has a **far** skyline and 4 **near** building panels. The game puts them above the sidewalk (it draws the sidewalk and street itself).
 
-### Level 1: Gym Street (evening)
-- `assets/backgrounds/level1_far.png` (960x270)
-
-```
-Pixel art side-scrolling game background, far layer, wide panorama 960x270: city skyline at sunset, purple and orange sky, distant apartment towers and a water tower, a few lit windows, soft clouds. 16-bit retro beat 'em up background like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no text.
-```
-
-- `assets/backgrounds/level1_near.png` (1440x270)
+### Far skyline: `assets/backgrounds/<level>/far.png`
 
 ```
-Pixel art side-scrolling beat 'em up street level, wide panorama 1440x270, side view: at the far left a boxing gym storefront with a big neon "GYM" sign shape and glass doors, then a row of small shops with metal shutters, brick walls with graffiti, street lamps just turning on. Sidewalk band from y=150 to y=180, asphalt street with a curb from y=180 to the bottom. Evening light, purple and orange tones. 16-bit retro style like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no readable text.
+Pixel art side-scrolling game background, a wide city skyline panorama that loops seamlessly left to right: [SCENE]. No ground, no street, no characters, no text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 21:9 image.
 ```
 
-### Level 2: Dark Alley (night)
-- `assets/backgrounds/level2_far.png` (960x270)
+### Near panels: `assets/backgrounds/<level>/near1.png` … `near4.png`
+
+Make 4 different panels per level, one per prompt. The bottom of the image is where the sidewalk starts.
 
 ```
-Pixel art side-scrolling game background, far layer, wide panorama 960x270: night city seen between tall buildings, dark blue sky with a full moon, fire escapes and rooftops silhouetted, distant red neon glow. 16-bit retro beat 'em up background like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no text.
+Pixel art side view of [PANEL], seen straight from the front, filling the image from the bottom edge up. The bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. No sidewalk, no street, no characters, no readable text. [MOOD]. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.
 ```
 
-- `assets/backgrounds/level2_near.png` (1440x270)
+| Level | `[SCENE]` (far) | `[MOOD]` | `[PANEL]` near1 / near2 / near3 / near4 |
+| --- | --- | --- | --- |
+| `level1` Gym Street | city skyline at sunset, purple and orange sky, distant apartment towers, a water tower, a few lit windows | evening light, purple and orange tones | a boxing gym storefront with a neon glove sign and glass doors / a small shop with a metal shutter / a brick wall with graffiti and a street lamp / a corner deli with an awning |
+| `level2` Dark Alley | night city between tall buildings, dark blue sky with a full moon, rooftops and fire escapes, distant red neon glow | night, dark blue and teal with warm lamp light | a wet red brick wall with a metal fire escape / overflowing dumpsters against a wall with a steam vent / a chain link fence with a flickering wall lamp / a back door with stacked crates |
+| `level3` Parking Lot | quiet apartment blocks at night, black and deep blue sky with stars, a few warm lit windows, distant highway lights | late night, orange sodium light and dark grey | a concrete parking garage wall with pillars / an old parked car in front of a concrete wall / a parking pay machine and a pillar with painted numbers / the entrance of a small apartment building with a warm lit doorway |
+
+### Gym: `assets/backgrounds/gym.png`
 
 ```
-Pixel art side-scrolling beat 'em up back alley level, wide panorama 1440x270, side view: wet red brick walls, metal fire escapes, overflowing dumpsters, steam vents, a flickering wall lamp, chain link fence, puddles reflecting light. Narrow sidewalk band from y=150 to y=180, cracked wet asphalt alley ground from y=180 to the bottom. Night, dark blue and teal with warm lamp light. 16-bit retro style like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no readable text.
-```
-
-### Level 3: Parking Lot (late night, Mike's home in sight)
-- `assets/backgrounds/level3_far.png` (960x270)
-
-```
-Pixel art side-scrolling game background, far layer, wide panorama 960x270: quiet residential apartment blocks at night, black and deep blue sky with stars, a few warm lit windows, distant highway lights. 16-bit retro beat 'em up background like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no text.
-```
-
-- `assets/backgrounds/level3_near.png` (1440x270)
-
-```
-Pixel art side-scrolling beat 'em up level, wide panorama 1440x270, side view: an empty multi-storey parking lot ground floor, concrete pillars, parked old cars, orange sodium lights, painted parking lines, and at the far right end the entrance of a small apartment building with a warm lit doorway. Sidewalk band from y=150 to y=180, concrete ground from y=180 to the bottom. Late night, orange and dark grey tones. 16-bit retro style like Streets of Rage, crisp hard pixel edges, limited palette, no characters, no readable text.
-```
-
-### Gym (between runs)
-- `assets/backgrounds/gym.png` (480x270)
-
-```
-Pixel art game menu background 480x270: inside a gritty old boxing gym, heavy punching bags hanging on chains, a boxing ring in the back, dumbbell racks, brick walls with old fight posters, warm overhead lights. 16-bit retro beat 'em up style, crisp hard pixel edges, limited palette, no characters, no readable text.
+Pixel art game menu background: inside a gritty old boxing gym, heavy punching bags hanging on chains, a boxing ring in the back, dumbbell racks, brick walls with old fight posters, warm overhead lights. Keep the middle calm and a bit dark (menu text goes there). 16-bit retro beat 'em up style, crisp pixels, limited palette, no characters, no readable text. Wide 16:9 image.
 ```
