@@ -1,13 +1,10 @@
-// Small animals. "flee.from": "hero" = scatter when Mike walks close.
-const ANIMAL_ANIMS = {
-  idle: { row: 0, frames: 4, fps: 5, loop: true },
-  flee: { row: 1, frames: 6, fps: 16, loop: true },
-};
+import { ANIMAL_ANIMS } from "../anims.js";
 
+// Small animals. "flee.from": "hero" = scatter when Mike walks close.
 const animal = (id, name, placeholder, flee, sound) => ({
   id,
   name,
-  sprite: { sheet: `assets/sprites/npcs/${id}.png`, cellW: 32, cellH: 32, anims: ANIMAL_ANIMS, placeholder },
+  sprite: { cellW: 32, cellH: 32, height: 18, anims: ANIMAL_ANIMS, placeholder },
   body: { w: 16, h: 10 },
   flee,
   sounds: { flee: sound },

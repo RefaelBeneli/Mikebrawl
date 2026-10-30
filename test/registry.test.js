@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as registry from "../data/registry.js";
 import { behaviors } from "../src/core/ai.js";
+import { stripPoses } from "../data/anims.js";
 
 const fighters = () => [...registry.heroes.values(), ...registry.enemies.values(), ...(registry.bosses?.values() ?? [])];
 
@@ -41,6 +42,23 @@ test("every level references existing enemies and bosses", () => {
     if (level.boss) assert.ok(registry.bosses.get(level.boss), `${level.id}: missing boss ${level.boss}`);
     (level.npcs ?? []).forEach((npc) => assert.ok(registry.npcs.get(npc.id), `${level.id}: missing npc ${npc.id}`));
   });
+});
+
+test("every animation says which drawn pose to show on each of its frames", () => {
+  registry.characters().forEach((def) => {
+    Object.entries(def.sprite.anims).forEach(([name, anim]) => {
+      assert.ok(anim.art?.file, `${def.id}.${name}: missing art file`);
+      assert.equal(anim.art.poses.length, anim.frames, `${def.id}.${name}: one pose per frame`);
+      assert.ok(anim.art.poses.every((pose) => Number.isInteger(pose) && pose >= 0), `${def.id}.${name}: bad pose index`);
+    });
+    assert.ok(def.sprite.anims.idle, `${def.id}: needs an idle animation (it sets the character's size)`);
+  });
+});
+
+test("Mike's strips are the short list the sprite guide promises", () => {
+  assert.deepEqual(stripPoses(registry.heroes.get("mike").sprite.anims), { idle: 2, walk: 4, punch: 6, kick: 3, jump: 3, fall: 5, victory: 1 });
+  assert.deepEqual(stripPoses(registry.enemies.get("thug").sprite.anims), { idle: 2, walk: 4, attack: 3, fall: 5 });
+  assert.deepEqual(stripPoses(registry.bosses.get("viper").sprite.anims), { idle: 2, walk: 4, attack: 3, fall: 5, special: 4, enrage: 2 });
 });
 
 test("ids are unique across content types", () => {

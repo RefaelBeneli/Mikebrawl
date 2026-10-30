@@ -2,6 +2,7 @@ import { WIDTH, HEIGHT, MAX_WIDTH } from "../engine/renderer.js";
 import { getImage } from "../engine/assets.js";
 import { attackBox } from "../core/combat.js";
 import { createRng } from "../core/progression.js";
+import { spritePath, gearPath, backgroundPath, NEAR_PANELS } from "../../data/registry.js";
 
 export const SIDEWALK_TOP = 150;
 export const STREET_TOP = 180;
@@ -37,16 +38,27 @@ function buildScenery(level) {
   return { skyline, buildings };
 }
 
+// Draws images side by side, repeating, scrolled by `scroll`.
+function tileRow(r, images, scroll) {
+  const total = images.reduce((sum, img) => sum + img.width, 0);
+  let x = -(((scroll % total) + total) % total);
+  while (x < WIDTH) {
+    images.forEach((img) => {
+      if (x + img.width > 0 && x < WIDTH) r.image(img, x, SIDEWALK_TOP - img.height);
+      x += img.width;
+    });
+  }
+}
+
 export function drawBackground(r, level, camX) {
-  const { palette, far, near } = level.background;
-  const farImage = getImage(far);
-  const nearImage = getImage(near);
+  const { palette } = level.background;
+  const farImage = getImage(backgroundPath(level, "far"));
+  const panels = Array.from({ length: NEAR_PANELS }, (_, i) => getImage(backgroundPath(level, `near${i + 1}`))).filter(Boolean);
   if (!sceneryCache.has(level.id)) sceneryCache.set(level.id, buildScenery(level));
   const scenery = sceneryCache.get(level.id);
 
   if (farImage) {
-    const parallax = Math.min(1, Math.max(0, (farImage.width - WIDTH) / Math.max(1, level.length - WIDTH)));
-    r.image(farImage, -camX * parallax, 0);
+    tileRow(r, [farImage], camX * FAR_PARALLAX);
   } else {
     const bandHeight = SIDEWALK_TOP / SKY_BANDS;
     for (let i = 0; i < SKY_BANDS; i += 1) {
@@ -58,27 +70,28 @@ export function drawBackground(r, level, camX) {
     });
   }
 
-  if (nearImage) {
-    r.image(nearImage, -camX, 0);
-    return;
-  }
-  scenery.buildings.forEach((b) => {
-    const x = b.x - camX;
-    if (x + b.w < 0 || x > WIDTH) return;
-    const top = SIDEWALK_TOP - b.h;
-    r.rect(x, top, b.w, b.h, b.color);
-    for (let wy = top + 10; wy < SIDEWALK_TOP - 24; wy += 18) {
-      for (let wx = x + 8; wx < x + b.w - 12; wx += 16) {
-        const lit = (Math.floor(wx + wy + b.lit * 100) % 3) === 0;
-        r.rect(wx, wy, 8, 10, lit ? palette.window : "#00000055");
+  if (panels.length) {
+    tileRow(r, panels, camX);
+  } else {
+    scenery.buildings.forEach((b) => {
+      const x = b.x - camX;
+      if (x + b.w < 0 || x > WIDTH) return;
+      const top = SIDEWALK_TOP - b.h;
+      r.rect(x, top, b.w, b.h, b.color);
+      for (let wy = top + 10; wy < SIDEWALK_TOP - 24; wy += 18) {
+        for (let wx = x + 8; wx < x + b.w - 12; wx += 16) {
+          const lit = (Math.floor(wx + wy + b.lit * 100) % 3) === 0;
+          r.rect(wx, wy, 8, 10, lit ? palette.window : "#00000055");
+        }
       }
-    }
-    r.rect(x + b.w / 2 - 9, SIDEWALK_TOP - 26, 18, 26, "#00000066");
-  });
+      r.rect(x + b.w / 2 - 9, SIDEWALK_TOP - 26, 18, 26, "#00000066");
+    });
+  }
   r.rect(0, SIDEWALK_TOP, WIDTH, STREET_TOP - SIDEWALK_TOP, palette.sidewalk);
   r.rect(0, STREET_TOP - 3, WIDTH, 3, palette.line);
   r.rect(0, STREET_TOP, WIDTH, HEIGHT - STREET_TOP, palette.street);
-  for (let x = -((camX * 1) % 60); x < WIDTH; x += 60) r.rect(x, 226, 26, 2, palette.line);
+  for (let x = -(camX % 60); x < WIDTH; x += 60) r.rect(x, 226, 26, 2, palette.line);
+  if (panels.length) return;
   for (let x = -(camX % 240) + 40; x < WIDTH + 20; x += 240) {
     r.rect(x, 70, 3, SIDEWALK_TOP + 10 - 70, "#222");
     r.rect(x - 4, 66, 12, 5, palette.window);
@@ -131,7 +144,17 @@ function placeholderFighter(r, f, sx, sy, gearColors) {
 }
 
 function gearPlaceholderColors(gear) {
-  return Object.fromEntries(gear.filter((item) => !getImage(item.layer)).map((item) => [item.slot, item.placeholder]));
+  return Object.fromEntries(gear.map((item) => [item.slot, item.placeholder]));
+}
+
+// The strip and pose to draw; animations without art yet borrow the first idle pose.
+function spriteFrame(def, animator) {
+  const { file, index } = animator.pose;
+  const img = getImage(spritePath(def, file));
+  if (img) return { img, file, index };
+  const idleFile = def.sprite.anims.idle.art.file;
+  const idle = getImage(spritePath(def, idleFile));
+  return idle ? { img: idle, file: idleFile, index: 0 } : null;
 }
 
 function sortedGear(f) {
@@ -143,19 +166,21 @@ export function drawFighter(r, f, camX) {
   if (f.state === "dead" && Math.floor(f.stateTime * 10) % 2 === 0) return;
   if (f.invuln > 0 && Math.floor(f.invuln * 12) % 2 === 0) return;
   const sprite = f.def.sprite;
-  const img = getImage(sprite.sheet);
+  const frame = spriteFrame(f.def, f.animator);
   const sx = Math.round(f.x - camX);
   const sy = Math.round(f.y - f.z);
   const gear = sortedGear(f);
-  if (img) {
-    const { col, row } = f.animator.cell;
+  if (frame) {
     const x = sx - sprite.cellW / 2;
     const y = sy - sprite.cellH;
-    r.cell(img, sprite.cellW, sprite.cellH, col, row, x, y, { flip: f.facing < 0 });
+    const flip = f.facing < 0;
+    if (f.hitFlash > 0) r.ctx.filter = "brightness(3)";
+    r.cell(frame.img, sprite.cellW, sprite.cellH, frame.index, 0, x, y, { flip });
     gear.forEach((item) => {
-      const layer = getImage(item.layer);
-      if (layer) r.cell(layer, sprite.cellW, sprite.cellH, col, row, x, y, { flip: f.facing < 0 });
+      const layer = getImage(gearPath(item, frame.file));
+      if (layer) r.cell(layer, sprite.cellW, sprite.cellH, frame.index, 0, x, y, { flip });
     });
+    r.ctx.filter = "none";
   } else {
     placeholderFighter(r, f, sx, sy, gearPlaceholderColors(gear));
   }
@@ -193,14 +218,13 @@ function placeholderNpc(r, npc, sx, sy) {
 
 export function drawNpc(r, npc, camX) {
   const sprite = npc.def.sprite;
-  const img = getImage(sprite.sheet);
+  const frame = spriteFrame(npc.def, npc.animator);
   const sx = Math.round(npc.x - camX);
   const sy = Math.round(npc.y);
   if (sx < -sprite.cellW || sx > WIDTH + sprite.cellW) return;
   r.ellipse(sx, sy, npc.def.body.w / 2 + 2, 3, "#000", 0.3);
-  if (img) {
-    const { col, row } = npc.animator.cell;
-    r.cell(img, sprite.cellW, sprite.cellH, col, row, sx - sprite.cellW / 2, sy - sprite.cellH, { flip: npc.facing < 0 });
+  if (frame) {
+    r.cell(frame.img, sprite.cellW, sprite.cellH, frame.index, 0, sx - sprite.cellW / 2, sy - sprite.cellH, { flip: npc.facing < 0 });
   } else {
     placeholderNpc(r, npc, sx, sy);
   }

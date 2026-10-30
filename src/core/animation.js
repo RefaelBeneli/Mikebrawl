@@ -29,8 +29,9 @@ export class Animator {
     this.done = !anim.loop && index >= anim.frames;
   }
 
-  get cell() {
-    const anim = this.current;
-    return { col: (anim.start ?? 0) + this.frame, row: anim.row };
+  // Which strip image and which pose in it to draw right now.
+  get pose() {
+    const { art } = this.current;
+    return { file: art.file, index: art.poses[this.frame] ?? 0 };
   }
 }

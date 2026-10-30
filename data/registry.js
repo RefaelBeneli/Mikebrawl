@@ -32,9 +32,9 @@ export const fx = {
   hitSpark: { sheet: "assets/sprites/fx/hit_spark.png", cellW: 32, cellH: 32, frames: 3, fps: 20 },
 };
 
-export function imageSources() {
-  const sheets = [...heroes.values(), ...opponents, ...npcs.values()].map((def) => def.sprite.sheet);
-  const itemArt = [...items.values()].flatMap((item) => [item.icon, item.layer]);
-  const backgrounds = levels.flatMap((level) => [level.background?.far, level.background?.near]);
-  return [...sheets, ...itemArt, ...backgrounds, ...Object.values(fx).map((effect) => effect.sheet)].filter(Boolean);
-}
+// Art lives at fixed paths, named after ids, so adding content never needs a path typed by hand.
+export const characters = () => [...heroes.values(), ...opponents, ...npcs.values()];
+export const spritePath = (def, file) => `assets/sprites/${def.id}/${file}.png`;
+export const gearPath = (item, file) => `assets/sprites/gear/${item.id}/${file}.png`;
+export const backgroundPath = (level, file) => `assets/backgrounds/${level.id}/${file}.png`;
+export const NEAR_PANELS = 4;

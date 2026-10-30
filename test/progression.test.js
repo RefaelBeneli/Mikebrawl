@@ -40,16 +40,16 @@ test("seeded rng is deterministic and in [0, 1)", () => {
   assert.ok(values.every((v) => v >= 0 && v < 1));
 });
 
-test("animator loops, finishes one-shots and maps cells", () => {
+test("animator loops, finishes one-shots and maps frames to drawn poses", () => {
   const animator = new Animator({
-    idle: { row: 0, frames: 4, fps: 10, loop: true },
-    punch2: { row: 2, start: 3, frames: 3, fps: 10 },
+    idle: { frames: 4, fps: 10, loop: true, art: { file: "idle", poses: [0, 0, 1, 1] } },
+    punch2: { frames: 3, fps: 10, art: { file: "punch", poses: [2, 3, 2] } },
   });
   animator.update(0.45);
   assert.equal(animator.frame, 0);
   animator.play("punch2");
   animator.update(0.15);
-  assert.deepEqual(animator.cell, { col: 4, row: 2 });
+  assert.deepEqual(animator.pose, { file: "punch", index: 3 });
   assert.equal(animator.done, false);
   animator.update(0.2);
   assert.equal(animator.done, true);
