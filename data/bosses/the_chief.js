@@ -5,7 +5,6 @@ export default {
   name: "The Chief",
   boss: true,
   sprite: {
-    sheet: "assets/sprites/bosses/the_chief.png",
     cellW: 128,
     cellH: 128,
     anims: BOSS_ANIMS,

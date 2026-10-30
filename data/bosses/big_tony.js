@@ -5,7 +5,6 @@ export default {
   name: "Big Tony",
   boss: true,
   sprite: {
-    sheet: "assets/sprites/bosses/big_tony.png",
     cellW: 128,
     cellH: 128,
     anims: BOSS_ANIMS,

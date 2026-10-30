@@ -5,7 +5,6 @@ export default {
   name: "Viper",
   boss: true,
   sprite: {
-    sheet: "assets/sprites/bosses/viper.png",
     cellW: 128,
     cellH: 128,
     anims: BOSS_ANIMS,

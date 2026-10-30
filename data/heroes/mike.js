@@ -4,7 +4,6 @@ export default {
   id: "mike",
   name: "Mike",
   sprite: {
-    sheet: "assets/sprites/mike/base.png",
     cellW: 96,
     cellH: 96,
     anims: MIKE_ANIMS,

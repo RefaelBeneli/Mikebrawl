@@ -4,7 +4,6 @@ export default {
   id: "runner",
   name: "Runner",
   sprite: {
-    sheet: "assets/sprites/enemies/runner.png",
     cellW: 96,
     cellH: 96,
     anims: HUMANOID_ANIMS,
