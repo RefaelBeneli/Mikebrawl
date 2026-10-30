@@ -3,9 +3,10 @@ import { Fighter, DEAD_FADE_TIME } from "../core/fighter.js";
 import { createBrain } from "../core/ai.js";
 import { calcDamage, canHit } from "../core/combat.js";
 import { computeStats, scaleStats } from "../core/stats.js";
-import { addXp } from "../core/progression.js";
-import { heroes, enemies, levels, moves, fx } from "../../data/registry.js";
-import { drawBackground, drawShadow, drawFighter, drawEffect, STREET_TOP, STREET_BOTTOM } from "./draw.js";
+import { addXp, rollDrops } from "../core/progression.js";
+import { createInventory, pickUp, equippedItems } from "../core/inventory.js";
+import { heroes, enemies, levels, items, moves, fx } from "../../data/registry.js";
+import { drawBackground, drawShadow, drawFighter, drawEffect, drawPickup, STREET_TOP, STREET_BOTTOM } from "./draw.js";
 import { drawHud, drawBanner, drawGoArrow } from "./hud.js";
 
 const MAX_ATTACKERS = 2;
@@ -17,16 +18,21 @@ const LEVEL_UP_HEAL = 0.3;
 const STAGE_CLEAR_HEAL = 0.4;
 const BANNER_SECONDS = 3;
 const CAMERA_EASE = 5;
+const PICKUP_RADIUS_X = 16;
+const PICKUP_RADIUS_Y = 10;
+const DUPLICATE_ITEM_XP = 20;
 
 export function heroStatsFor(run) {
   const mike = heroes.get("mike");
-  return computeStats({ base: mike.stats, growth: mike.growth, level: run.progress.level });
+  return computeStats({ base: mike.stats, growth: mike.growth, level: run.progress.level, gear: equippedItems(run.inventory, items) });
 }
 
 export function createLevelScene(game, { run }) {
   const level = levels[run.levelIndex];
   const mike = heroes.get("mike");
+  run.inventory ??= createInventory();
   const hero = new Fighter({ def: mike, team: "hero", x: 60, y: 220, stats: heroStatsFor(run), moves, level: run.progress.level });
+  hero.gear = equippedItems(run.inventory, items);
   if (run.heroHp) hero.hp = Math.min(run.heroHp, hero.stats.hp);
 
   const state = {
@@ -45,6 +51,7 @@ export function createLevelScene(game, { run }) {
   const foes = [];
   const brains = new Map();
   const effects = [];
+  const pickups = [];
   const tokens = new Set();
 
   const world = {
@@ -92,17 +99,57 @@ export function createLevelScene(game, { run }) {
     effects.push({ kind: "text", text, x: hero.x, y: hero.y, h: hero.def.body.h + 16, t: 0, life: 1.2, color, size });
   }
 
-  function onKill(enemy) {
-    tokens.delete(enemy);
-    const result = addXp(run.progress, enemy.def.xp);
+  function gainXp(amount) {
+    const result = addXp(run.progress, amount);
     run.progress = { level: result.level, xp: result.xp };
-    run.totalXp += enemy.def.xp;
-    run.kills = (run.kills ?? 0) + 1;
+    run.totalXp += amount;
     if (result.gained > 0) {
       hero.setStats(heroStatsFor(run));
       hero.heal(Math.round(hero.stats.hp * LEVEL_UP_HEAL));
       addFloatingText("LEVEL UP!", "#ffd040");
       game.sfx("level_up");
+    }
+  }
+
+  function refreshGear() {
+    hero.gear = equippedItems(run.inventory, items);
+    hero.setStats(heroStatsFor(run));
+  }
+
+  function onKill(enemy) {
+    tokens.delete(enemy);
+    run.kills = (run.kills ?? 0) + 1;
+    gainXp(enemy.def.xp);
+    rollDrops(enemy.def.drops).forEach((itemId, i) => {
+      pickups.push({ item: items.get(itemId), x: enemy.x + i * 14, y: enemy.y, t: 0 });
+      game.sfx("item_drop");
+    });
+  }
+
+  function collect(pickup) {
+    const { inventory, result } = pickUp(run.inventory, pickup.item);
+    run.inventory = inventory;
+    if (result === "duplicate") {
+      gainXp(DUPLICATE_ITEM_XP);
+      addFloatingText(`+${DUPLICATE_ITEM_XP} XP`, "#ffd040", 8);
+    } else if (result === "equipped") {
+      refreshGear();
+      addFloatingText(pickup.item.name.toUpperCase(), "#80ff80", 8);
+    } else {
+      addFloatingText(`BAG: ${pickup.item.name.toUpperCase()}`, "#80c0ff", 8);
+    }
+    game.sfx("item_pickup");
+  }
+
+  function updatePickups(dt) {
+    for (let i = pickups.length - 1; i >= 0; i -= 1) {
+      const pickup = pickups[i];
+      pickup.t += dt;
+      const near = Math.abs(pickup.x - hero.x) < PICKUP_RADIUS_X && Math.abs(pickup.y - hero.y) < PICKUP_RADIUS_Y;
+      if (near && hero.alive && !hero.airborne) {
+        pickups.splice(i, 1);
+        collect(pickup);
+      }
     }
   }
 
@@ -127,6 +174,7 @@ export function createLevelScene(game, { run }) {
   }
 
   function finishLevel() {
+    pickups.splice(0).forEach(collect);
     state.phase = "clear";
     state.endTimer = 0;
     hero.celebrate();
@@ -198,6 +246,7 @@ export function createLevelScene(game, { run }) {
     level,
     world,
     debugFoes: () => foes,
+    debugPickups: () => pickups,
 
     enter() {
       game.music?.(level.music);
@@ -217,6 +266,7 @@ export function createLevelScene(game, { run }) {
       readHeroIntent();
       hero.update(dt, world);
       dispatchEvents(hero);
+      updatePickups(dt);
       foes.forEach((enemy) => {
         brains.get(enemy)(enemy, world, dt);
         enemy.update(dt, world);
@@ -237,6 +287,7 @@ export function createLevelScene(game, { run }) {
       drawBackground(r, level, camX);
       const actors = [hero, ...foes].sort((a, b) => a.y - b.y);
       actors.forEach((f) => drawShadow(r, f, camX, f.def.body.w / 2 + 2));
+      pickups.forEach((pickup) => drawPickup(r, pickup, camX));
       actors.forEach((f) => drawFighter(r, f, camX));
       effects.forEach((effect) => drawEffect(r, effect, camX, fx));
       drawHud(r, { hero, progress: run.progress, boss: state.boss, levelName: level.name });
