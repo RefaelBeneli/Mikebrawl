@@ -8,6 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#000000">
   <title>Mikebrawl</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
   <style>
     html, body {
       margin: 0;
@@ -54,5 +57,17 @@
   <canvas id="game"></canvas>
   <div id="rotate"><span>&#x21bb;</span>Rotate your phone<br>to play Mikebrawl</div>
   <script type="module" src="src/main.js"></script>
+  <script>
+    // Skipped on localhost so dev edits are never served stale; add ?sw to test offline locally.
+    const isDev = ["localhost", "127.0.0.1"].includes(location.hostname) && !location.search.includes("sw");
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http") && !isDev) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).then((registration) => {
+          const urls = [location.href, ...performance.getEntriesByType("resource").map((entry) => entry.name)];
+          registration.active?.postMessage({ type: "cache", urls });
+        }).catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
