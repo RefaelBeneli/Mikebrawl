@@ -16,7 +16,7 @@ Prompts for every file: [prompts.md](prompts.md).
 An anchor is one clean picture of the character. You attach it to every prompt so all poses look like the same person.
 
 1. Open Gemini and pick image generation (Nano Banana).
-2. For Mike: attach 2-3 photos of the real Mike, then paste the **Mike anchor** prompt.
+2. For Mike, do two steps. First make a big face portrait from his photos. Then make the full body from that portrait. A small full-body figure loses the face.
 3. Regenerate until you love it. Save it on your computer (not in the game folder), e.g. `anchors/mike.png`.
 4. Do the same for each enemy, boss and NPC (their anchor prompts need no photos).
 

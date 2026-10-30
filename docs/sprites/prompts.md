@@ -11,11 +11,23 @@ Keep this file in sync with `data/anims.js` (pose counts).
 
 ## Mike
 
-### Anchor (attach 2-3 photos of Mike)
+### Anchor, step 1: face portrait (attach 1-2 photos of Mike)
+
+Use clear, well-lit photos where his face is big and looking at the camera. Skip sunglasses, hats, and group shots. A full-body character is too small for the AI to keep his face, so lock the face first in a big portrait.
 
 ```
-Turn the person in the attached photos into one full-body pixel art video game character named Mike. Match his face, hair and beard exactly: short dark messy wavy hair, short full dark beard, thick dark eyebrows, tan olive skin, athletic muscular martial artist build. Outfit: shirtless, black jogger pants with a drawstring, plain dark grey sneakers with light soles, bare hands, no headband. Standing in a fighting stance, fists up, facing right. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no text. No pink or purple on the character.
+Redraw the man in the attached photo as a detailed 16-bit pixel art portrait, head and shoulders, three-quarter view facing right. This is the same real person: keep his exact identity. Copy his face from the photo feature by feature: face shape, jawline, nose shape and size, eye shape and spacing, eyebrow shape, mouth and lips, ears, hairline, hairstyle, beard shape and length, and skin tone. Do not make him more handsome, younger, or generic, and do not change his proportions. Only change the drawing style to pixel art. Crisp pixels, dark outline, rich shading. Solid flat magenta #FF00FF background, no text.
 ```
+
+Regenerate until people who know Mike say "that's him". If one feature is off, say so in the same chat, for example "make the nose wider like in the photo, keep everything else".
+
+### Anchor, step 2: full body (attach the portrait from step 1 and the same photos)
+
+```
+Using the attached pixel art portrait and photos of the same man, draw him as one full-body pixel art video game character named Mike. His head and face must match the attached portrait exactly: same face, hair, beard and skin tone. Body: athletic muscular martial artist build. Outfit: shirtless, black jogger pants with a drawstring, plain dark grey sneakers with light soles, bare hands, no headband. Standing in a fighting stance, fists up, facing right. Make the head big and clear, like a 16-bit beat 'em up hero. 16-bit retro beat 'em up pixel art like Streets of Rage, side view, crisp pixels, dark outline, limited palette. Solid flat magenta #FF00FF background, no floor, no shadow, no text. No pink or purple on the character.
+```
+
+For every Mike strip below, attach this full-body anchor and the portrait.
 
 ### `assets/sprites/mike/idle.png` (2 poses)
 
