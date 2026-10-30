@@ -25,4 +25,10 @@ export default {
   ],
   boss: "big_tony",
   bossMinions: [],
+  npcs: [
+    { id: "cat", x: 150, y: 176 },
+    { id: "scared_woman", x: 330, y: 168 },
+    { id: "old_man", x: 720, y: 164 },
+    { id: "homeless_man", x: 1120, y: 172 },
+  ],
 };
