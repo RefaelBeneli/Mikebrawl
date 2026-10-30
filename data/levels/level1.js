@@ -23,4 +23,6 @@ export default {
     { at: 640, enemies: ["runner", "runner", "thug"] },
     { at: 1040, enemies: ["thug", "runner", "thug", "runner"] },
   ],
+  boss: "big_tony",
+  bossMinions: [],
 };

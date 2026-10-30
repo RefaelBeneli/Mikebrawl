@@ -5,7 +5,7 @@ import { calcDamage, canHit } from "../core/combat.js";
 import { computeStats, scaleStats } from "../core/stats.js";
 import { addXp, rollDrops } from "../core/progression.js";
 import { createInventory, pickUp, equippedItems } from "../core/inventory.js";
-import { heroes, enemies, levels, items, moves, fx } from "../../data/registry.js";
+import { heroes, enemies, bosses, levels, items, moves, fx } from "../../data/registry.js";
 import { drawBackground, drawShadow, drawFighter, drawEffect, drawPickup, STREET_TOP, STREET_BOTTOM } from "./draw.js";
 import { drawHud, drawBanner, drawGoArrow } from "./hud.js";
 
@@ -14,13 +14,16 @@ const HERO_LEAD_X = 200;
 const EDGE_MARGIN = 12;
 const OFFSCREEN_MARGIN = 60;
 const SPAWN_INTERVAL = 0.7;
-const LEVEL_UP_HEAL = 0.3;
-const STAGE_CLEAR_HEAL = 0.4;
+const LEVEL_UP_HEAL = 0.15;
+const STAGE_CLEAR_HEAL = 0.25;
 const BANNER_SECONDS = 3;
 const CAMERA_EASE = 5;
 const PICKUP_RADIUS_X = 16;
 const PICKUP_RADIUS_Y = 10;
 const DUPLICATE_ITEM_XP = 20;
+const BOSS_TRIGGER_DISTANCE = 380;
+const BOSS_MINION_DELAY = 2.5;
+const PLAYING_PHASES = new Set(["walk", "fight", "boss"]);
 
 export function heroStatsFor(run) {
   const mike = heroes.get("mike");
@@ -153,17 +156,21 @@ export function createLevelScene(game, { run }) {
     }
   }
 
-  function spawnEnemy({ id, fromLeft }) {
-    const def = enemies.get(id);
-    const stats = scaleStats(def.stats, level.enemyScale);
-    const x = fromLeft ? state.camX - 30 : state.camX + WIDTH + 30;
+  function spawnFighter(def, { fromLeft, stats }) {
+    const screenX = state.lockX ?? state.camX;
+    const x = fromLeft ? screenX - 30 : screenX + WIDTH + 30;
     const y = STREET_TOP + 8 + Math.random() * (STREET_BOTTOM - STREET_TOP - 16);
     const enemy = new Fighter({ def, team: "enemy", x, y, stats, moves });
     enemy.facing = fromLeft ? 1 : -1;
     foes.push(enemy);
     brains.set(enemy, createBrain(def.ai));
-    if (Math.random() < 0.5) game.sfx(def.sounds?.taunt);
     return enemy;
+  }
+
+  function spawnEnemy({ id, fromLeft }) {
+    const def = enemies.get(id);
+    if (Math.random() < 0.5) game.sfx(def.sounds?.taunt);
+    return spawnFighter(def, { fromLeft, stats: scaleStats(def.stats, level.enemyScale) });
   }
 
   function startWave(wave) {
@@ -171,6 +178,19 @@ export function createLevelScene(game, { run }) {
     state.lockX = Math.max(0, Math.min(level.length - WIDTH, wave.at - WIDTH / 2));
     state.spawnQueue = wave.enemies.map((id, i) => ({ id, fromLeft: i % 3 === 2 }));
     state.spawnTimer = 0;
+  }
+
+  function startBoss() {
+    const def = bosses.get(level.boss);
+    state.phase = "boss";
+    state.lockX = level.length - WIDTH;
+    state.boss = spawnFighter(def, { fromLeft: false, stats: { ...def.stats } });
+    state.spawnQueue = (level.bossMinions ?? []).map((id) => ({ id, fromLeft: true }));
+    state.spawnTimer = BOSS_MINION_DELAY;
+    state.banner = { text: def.name.toUpperCase(), t: 0, color: "#ff6060" };
+    game.sfx("boss_warning");
+    game.sfx(def.sounds?.intro);
+    game.music?.(level.bossMusic);
   }
 
   function finishLevel() {
@@ -188,18 +208,22 @@ export function createLevelScene(game, { run }) {
     if (state.phase === "walk") {
       const wave = waves[state.waveIndex];
       if (wave && hero.x >= wave.at) startWave(wave);
-      else if (!wave) finishLevel();
-    } else if (state.phase === "fight") {
+      else if (!wave && !level.boss) finishLevel();
+      else if (!wave && hero.x >= level.length - BOSS_TRIGGER_DISTANCE) startBoss();
+    } else if (state.phase === "fight" || state.phase === "boss") {
       state.spawnTimer -= dt;
       if (state.spawnQueue.length && state.spawnTimer <= 0) {
         spawnEnemy(state.spawnQueue.shift());
         state.spawnTimer = SPAWN_INTERVAL;
       }
-      if (!state.spawnQueue.length && foes.every((f) => !f.alive)) {
+      const cleared = !state.spawnQueue.length && foes.every((f) => !f.alive);
+      if (cleared && state.phase === "boss") {
+        finishLevel();
+      } else if (cleared) {
         state.waveIndex += 1;
         state.lockX = null;
         state.phase = "walk";
-        state.goTime = waves[state.waveIndex] ? 3 : 0;
+        state.goTime = 3;
       }
     }
     if (state.phase !== "dead" && !hero.alive) {
@@ -225,7 +249,7 @@ export function createLevelScene(game, { run }) {
 
   function readHeroIntent() {
     const { input } = game;
-    if (state.phase !== "walk" && state.phase !== "fight") {
+    if (!PLAYING_PHASES.has(state.phase)) {
       hero.intent = { x: 0, y: 0, attack: null, jump: false, face: 0 };
       return;
     }
@@ -267,7 +291,7 @@ export function createLevelScene(game, { run }) {
         return;
       }
 
-      if (game.input.pressed("bag") && (state.phase === "walk" || state.phase === "fight")) {
+      if (game.input.pressed("bag") && PLAYING_PHASES.has(state.phase)) {
         game.sfx("ui_tap");
         game.scenes.push("equip", { run });
         return;

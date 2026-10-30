@@ -1,0 +1,53 @@
+import { BOSS_ANIMS } from "../anims.js";
+
+export default {
+  id: "big_tony",
+  name: "Big Tony",
+  boss: true,
+  sprite: {
+    sheet: "assets/sprites/bosses/big_tony.png",
+    cellW: 128,
+    cellH: 128,
+    anims: BOSS_ANIMS,
+    placeholder: "#5a3a8a",
+  },
+  body: { w: 44, h: 100 },
+  stats: { hp: 480, power: 16, defense: 5, atkSpeed: 0.8, speed: 42, crit: 0.05 },
+  poise: 3,
+  ai: {
+    type: "boss",
+    range: 38,
+    windup: 0.55,
+    cooldown: 1.7,
+    special: { button: "skill1", every: 7, windup: 0.9, minRange: 70, maxRange: 260 },
+    enrage: { at: 0.5, bonus: { speed: 15, atkSpeed: 0.25, power: 2 }, specialEvery: 4.5 },
+  },
+  moveset: { ground: { punch: "tony_hammer" }, skills: { skill1: "tony_charge", enrage: "tony_enrage" } },
+  moves: [
+    {
+      id: "tony_hammer",
+      anim: "attack",
+      strength: 1.3,
+      activeFrames: [2],
+      hitbox: { x: 8, y: 50, w: 40, h: 30 },
+      knockback: 50,
+      knockdown: true,
+      heavy: true,
+    },
+    {
+      id: "tony_charge",
+      anim: "special",
+      strength: 1.4,
+      activeFrames: [2, 3, 4],
+      hitbox: { x: 0, y: 20, w: 40, h: 70 },
+      dash: 240,
+      knockback: 80,
+      knockdown: true,
+      heavy: true,
+    },
+    { id: "tony_enrage", anim: "enrage", strength: 0, activeFrames: [], hitbox: { x: 0, y: 0, w: 0, h: 0 }, sound: "big_tony_enrage" },
+  ],
+  xp: 150,
+  drops: [{ item: "lucky_tank", chance: 1 }],
+  sounds: { intro: "big_tony_intro", hurt: "big_tony_hurt", ko: "big_tony_ko" },
+};

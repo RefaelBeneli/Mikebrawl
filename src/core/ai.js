@@ -1,4 +1,5 @@
 import { DEPTH_BAND } from "./combat.js";
+import { addStats } from "./stats.js";
 
 const ALIGN_TOLERANCE_X = 6;
 const ALIGN_TOLERANCE_Y = DEPTH_BAND - 3;
@@ -42,7 +43,7 @@ function windUp(self, mem, intent, dt, world, onRelease) {
   world.releaseToken(self);
 }
 
-function engage(self, hero, world, dt, mem, intent, cfg) {
+function engage(self, hero, world, dt, mem, intent, cfg, { useTokens = true } = {}) {
   if (mem.windup > 0) {
     lookAt(self, hero, intent);
     windUp(self, mem, intent, dt, world, () => {
@@ -51,7 +52,7 @@ function engage(self, hero, world, dt, mem, intent, cfg) {
     });
     return;
   }
-  if (!world.requestToken(self)) {
+  if (useTokens && !world.requestToken(self)) {
     waitNearby(self, hero, mem, intent, cfg.waitDistance ?? 100, dt);
     return;
   }
@@ -86,6 +87,47 @@ export const behaviors = {
       return;
     }
     engage(self, world.hero, world, dt, mem, intent, cfg);
+  },
+
+  boss(self, world, dt, mem, cfg, intent) {
+    const hero = world.hero;
+    const { special, enrage } = cfg;
+    mem.specialTimer = (mem.specialTimer ?? special.every * 0.6) - dt;
+
+    if (enrage && !self.enraged && self.hp <= self.stats.hp * enrage.at) {
+      self.enraged = true;
+      self.setStats(addStats({ ...self.stats }, enrage.bonus));
+      self.invuln = 1;
+      mem.windup = 0;
+      intent.attack = "enrage";
+      return;
+    }
+    if (mem.windup > 0) {
+      engage(self, hero, world, dt, mem, intent, cfg, { useTokens: false });
+      return;
+    }
+
+    const dx = hero.x - self.x;
+    const dy = hero.y - self.y;
+    const distance = Math.abs(dx);
+    if (mem.specialTimer <= 0 && self.cooldown <= 0) {
+      if (distance < special.minRange) {
+        steer(intent, -Math.sign(dx) * 40, dy);
+        lookAt(self, hero, intent);
+        return;
+      }
+      if (distance <= special.maxRange) {
+        steer(intent, 0, dy);
+        lookAt(self, hero, intent);
+        if (Math.abs(dy) < ALIGN_TOLERANCE_Y - 2) {
+          mem.windup = special.windup;
+          mem.button = special.button;
+          mem.specialTimer = self.enraged ? enrage.specialEvery : special.every;
+        }
+        return;
+      }
+    }
+    engage(self, hero, world, dt, mem, intent, cfg, { useTokens: false });
   },
 };
 
