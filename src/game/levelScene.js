@@ -5,8 +5,9 @@ import { calcDamage, canHit } from "../core/combat.js";
 import { computeStats, scaleStats } from "../core/stats.js";
 import { addXp, rollDrops } from "../core/progression.js";
 import { createInventory, pickUp, equippedItems } from "../core/inventory.js";
-import { heroes, enemies, bosses, levels, items, moves, fx } from "../../data/registry.js";
-import { drawBackground, drawShadow, drawFighter, drawEffect, drawPickup, STREET_TOP, STREET_BOTTOM } from "./draw.js";
+import { Npc } from "../core/npc.js";
+import { heroes, enemies, bosses, levels, items, moves, fx, npcs } from "../../data/registry.js";
+import { drawBackground, drawShadow, drawFighter, drawEffect, drawPickup, drawNpc, STREET_TOP, STREET_BOTTOM } from "./draw.js";
 import { drawHud, drawBanner, drawGoArrow } from "./hud.js";
 
 const MAX_ATTACKERS = 2;
@@ -56,10 +57,21 @@ export function createLevelScene(game, { run }) {
   const effects = [];
   const pickups = [];
   const tokens = new Set();
+  const bystanders = (level.npcs ?? []).map(({ id, x, y }) => new Npc({ def: npcs.get(id), x, y }));
 
   const world = {
+    viewWidth: WIDTH,
+
     get hero() {
       return hero;
+    },
+
+    get foes() {
+      return foes;
+    },
+
+    get camX() {
+      return state.camX;
     },
 
     clamp(f) {
@@ -271,6 +283,7 @@ export function createLevelScene(game, { run }) {
     world,
     debugFoes: () => foes,
     debugPickups: () => pickups,
+    debugNpcs: () => bystanders,
 
     enter() {
       game.music?.(level.music);
@@ -311,6 +324,8 @@ export function createLevelScene(game, { run }) {
           foes.splice(i, 1);
         }
       }
+      bystanders.forEach((npc) => game.sfx(npc.update(dt, world)));
+      for (let i = bystanders.length - 1; i >= 0; i -= 1) if (bystanders[i].gone) bystanders.splice(i, 1);
       updatePhase(dt);
       updateCamera(dt);
     },
@@ -318,10 +333,12 @@ export function createLevelScene(game, { run }) {
     render(r) {
       const camX = Math.round(state.camX);
       drawBackground(r, level, camX);
-      const actors = [hero, ...foes].sort((a, b) => a.y - b.y);
+      const actors = [hero, ...foes];
       actors.forEach((f) => drawShadow(r, f, camX, f.def.body.w / 2 + 2));
       pickups.forEach((pickup) => drawPickup(r, pickup, camX));
-      actors.forEach((f) => drawFighter(r, f, camX));
+      [...actors, ...bystanders]
+        .sort((a, b) => a.y - b.y)
+        .forEach((entity) => (entity instanceof Npc ? drawNpc(r, entity, camX) : drawFighter(r, entity, camX)));
       effects.forEach((effect) => drawEffect(r, effect, camX, fx));
       drawHud(r, { hero, progress: run.progress, boss: state.boss, levelName: level.name });
       if (state.goTime > 0) drawGoArrow(r, state.goTime);

@@ -167,6 +167,44 @@ export function drawFighter(r, f, camX) {
   }
 }
 
+function placeholderNpc(r, npc, sx, sy) {
+  const { w, h } = npc.def.body;
+  const color = npc.def.sprite.placeholder;
+  const fleeing = npc.state === "flee";
+  const bob = fleeing ? Math.round(Math.abs(Math.sin(npc.animator.time * 18)) * 2) : 0;
+  if (h < 20) {
+    const headX = npc.facing > 0 ? sx + w / 2 - 2 : sx - w / 2 - 4;
+    r.rect(sx - w / 2, sy - h - bob, w, h - 3, color);
+    r.rect(headX, sy - h - 3 - bob, 6, 6, color);
+    r.rect(npc.facing > 0 ? sx - w / 2 - 6 : sx + w / 2, sy - h + 1 - bob, 6, 2, color);
+    return;
+  }
+  const top = sy - h - bob;
+  r.rect(sx - w / 2 + 3, sy - h * 0.45, w / 2 - 4, h * 0.45, "#2a2a2a");
+  r.rect(sx + 1, sy - h * 0.45, w / 2 - 4, h * 0.45, "#222");
+  r.rect(sx - w / 2, top + 13, w, h * 0.55 - 13, color);
+  r.rect(sx - 6, top, 12, 13, "#e0b090");
+  if (fleeing) {
+    r.rect(sx - w / 2 - 3, top - 4, 3, 18, color);
+    r.rect(sx + w / 2, top - 4, 3, 18, color);
+  }
+}
+
+export function drawNpc(r, npc, camX) {
+  const sprite = npc.def.sprite;
+  const img = getImage(sprite.sheet);
+  const sx = Math.round(npc.x - camX);
+  const sy = Math.round(npc.y);
+  if (sx < -sprite.cellW || sx > WIDTH + sprite.cellW) return;
+  r.ellipse(sx, sy, npc.def.body.w / 2 + 2, 3, "#000", 0.3);
+  if (img) {
+    const { col, row } = npc.animator.cell;
+    r.cell(img, sprite.cellW, sprite.cellH, col, row, sx - sprite.cellW / 2, sy - sprite.cellH, { flip: npc.facing < 0 });
+  } else {
+    placeholderNpc(r, npc, sx, sy);
+  }
+}
+
 export function drawPickup(r, pickup, camX) {
   const x = Math.round(pickup.x - camX);
   const bob = Math.round(Math.sin(pickup.t * 5) * 2);

@@ -26,4 +26,11 @@ export default {
   ],
   boss: "viper",
   bossMinions: ["runner"],
+  npcs: [
+    { id: "rat", x: 120, y: 250 },
+    { id: "homeless_man", x: 300, y: 170 },
+    { id: "cat", x: 520, y: 176 },
+    { id: "rat", x: 800, y: 240 },
+    { id: "scared_woman", x: 980, y: 166 },
+  ],
 };
