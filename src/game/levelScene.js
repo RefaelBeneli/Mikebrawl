@@ -252,6 +252,10 @@ export function createLevelScene(game, { run }) {
       game.music?.(level.music);
     },
 
+    resume() {
+      refreshGear();
+    },
+
     update(dt) {
       state.banner.t += dt;
       state.goTime = Math.max(0, state.goTime - dt);
@@ -263,6 +267,11 @@ export function createLevelScene(game, { run }) {
         return;
       }
 
+      if (game.input.pressed("bag") && (state.phase === "walk" || state.phase === "fight")) {
+        game.sfx("ui_tap");
+        game.scenes.push("equip", { run });
+        return;
+      }
       readHeroIntent();
       hero.update(dt, world);
       dispatchEvents(hero);

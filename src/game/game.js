@@ -6,6 +6,7 @@ import music from "../../data/music.js";
 import { WIDTH, HEIGHT } from "../engine/renderer.js";
 import { imageSources, levels } from "../../data/registry.js";
 import { createLevelScene } from "./levelScene.js";
+import { createEquipScene } from "./equipScene.js";
 
 function createBootScene(game) {
   let progress = 0;
@@ -51,6 +52,7 @@ export function createGame({ renderer, input }) {
 
   scenes.register("boot", createBootScene);
   scenes.register("level", createLevelScene);
+  scenes.register("equip", createEquipScene);
   scenes.go("boot");
 
   return {

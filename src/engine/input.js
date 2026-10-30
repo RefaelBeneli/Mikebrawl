@@ -9,6 +9,7 @@ const DEFAULT_BUTTONS = [
   { id: "jump", label: "J", x: 452, y: 246, r: 15, color: "#40b060", visible: true },
   { id: "skill1", label: "1", x: 364, y: 196, r: 15, color: "#c08020", visible: false },
   { id: "skill2", label: "2", x: 400, y: 168, r: 15, color: "#a040c0", visible: false },
+  { id: "bag", label: "BAG", x: 434, y: 16, r: 11, color: "#8a6a20", visible: true },
   { id: "mute", label: "SND", x: 462, y: 16, r: 11, color: "#606060", visible: true, system: true },
 ];
 
@@ -23,6 +24,7 @@ const KEY_ACTIONS = {
   KeyU: "skill1",
   KeyI: "skill2",
   KeyM: "mute",
+  KeyB: "bag",
   Escape: "back",
   Enter: "confirm",
 };
@@ -211,7 +213,8 @@ export function createInput(renderer) {
         .filter((b) => b.visible && !b.system)
         .forEach((b) => {
           r.circle(b.x, b.y, b.r, b.color, held.has(b.id) ? 0.7 : 0.35);
-          r.text(b.label, b.x, b.y - 4, { align: "center", size: 9, alpha: 0.9 });
+          const size = b.label.length > 1 ? 6 : 9;
+          r.text(b.label, b.x, b.y - size / 2, { align: "center", size, alpha: 0.9 });
         });
     },
   };
