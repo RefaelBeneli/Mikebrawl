@@ -38,6 +38,14 @@ test("punch starts the combo and hits only on the active frame", () => {
   assert.equal(hero.state, "idle");
 });
 
+test("pressing a direction and punch on the same frame turns before punching", () => {
+  const world = createWorld();
+  const hero = mike();
+  run(hero, world, 0.2, { x: -1, attack: "punch" });
+  assert.equal(hero.facing, -1);
+  assert.ok(world.attacks.length > 0);
+});
+
 test("pressing punch again during the punch chains to punch2", () => {
   const world = createWorld();
   const hero = mike();

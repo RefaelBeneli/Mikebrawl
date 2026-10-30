@@ -3,12 +3,13 @@ import heroMoves from "./moves.js";
 import mike from "./heroes/mike.js";
 import thug from "./enemies/thug.js";
 import runner from "./enemies/runner.js";
+import level1 from "./levels/level1.js";
 
 const indexById = (list) => new Map(list.map((entry) => [entry.id, entry]));
 
 export const heroes = indexById([mike]);
 export const enemies = indexById([thug, runner]);
-export const levels = [];
+export const levels = [level1];
 export const items = indexById([]);
 
 export const moves = indexById([...heroMoves, ...[...enemies.values()].flatMap((enemy) => enemy.moves ?? [])]);
