@@ -1,0 +1,52 @@
+import { BOSS_ANIMS } from "../anims.js";
+
+export default {
+  id: "viper",
+  name: "Viper",
+  boss: true,
+  sprite: {
+    sheet: "assets/sprites/bosses/viper.png",
+    cellW: 128,
+    cellH: 128,
+    anims: BOSS_ANIMS,
+    placeholder: "#2a7a4a",
+  },
+  body: { w: 30, h: 88 },
+  stats: { hp: 560, power: 19, defense: 6, atkSpeed: 1.2, speed: 72, crit: 0.1 },
+  poise: 2,
+  ai: {
+    type: "boss",
+    range: 34,
+    windup: 0.4,
+    cooldown: 1.2,
+    special: { button: "skill1", every: 6, windup: 0.7, minRange: 60, maxRange: 200 },
+    enrage: { at: 0.5, bonus: { speed: 18, atkSpeed: 0.3 }, specialEvery: 3.5 },
+  },
+  moveset: { ground: { punch: "viper_roundhouse" }, skills: { skill1: "viper_knee", enrage: "viper_enrage" } },
+  moves: [
+    {
+      id: "viper_roundhouse",
+      anim: "attack",
+      strength: 1.2,
+      activeFrames: [2],
+      hitbox: { x: 8, y: 40, w: 42, h: 24 },
+      knockback: 40,
+      heavy: true,
+    },
+    {
+      id: "viper_knee",
+      anim: "special",
+      strength: 1.6,
+      activeFrames: [2, 3],
+      hitbox: { x: 4, y: 20, w: 36, h: 44 },
+      leap: { vz: 260, vx: 210 },
+      knockback: 70,
+      knockdown: true,
+      heavy: true,
+    },
+    { id: "viper_enrage", anim: "enrage", strength: 0, activeFrames: [], hitbox: { x: 0, y: 0, w: 0, h: 0 }, sound: "viper_enrage" },
+  ],
+  xp: 220,
+  drops: [{ item: "street_boots", chance: 1 }],
+  sounds: { intro: "viper_intro", hurt: "viper_hurt", ko: "viper_ko" },
+};

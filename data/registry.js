@@ -4,7 +4,11 @@ import mike from "./heroes/mike.js";
 import thug from "./enemies/thug.js";
 import runner from "./enemies/runner.js";
 import bigTony from "./bosses/big_tony.js";
+import viper from "./bosses/viper.js";
+import theChief from "./bosses/the_chief.js";
 import level1 from "./levels/level1.js";
+import level2 from "./levels/level2.js";
+import level3 from "./levels/level3.js";
 import fightGloves from "./items/fight_gloves.js";
 import streetBoots from "./items/street_boots.js";
 import luckyTank from "./items/lucky_tank.js";
@@ -14,8 +18,8 @@ const indexById = (list) => new Map(list.map((entry) => [entry.id, entry]));
 
 export const heroes = indexById([mike]);
 export const enemies = indexById([thug, runner]);
-export const bosses = indexById([bigTony]);
-export const levels = [level1];
+export const bosses = indexById([bigTony, viper, theChief]);
+export const levels = [level1, level2, level3];
 export const items = indexById([fightGloves, streetBoots, luckyTank, focusHeadband]);
 
 const opponents = [...enemies.values(), ...bosses.values()];
