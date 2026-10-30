@@ -2,13 +2,14 @@ import { WIDTH } from "../engine/renderer.js";
 import { Fighter, DEAD_FADE_TIME } from "../core/fighter.js";
 import { createBrain } from "../core/ai.js";
 import { calcDamage, canHit } from "../core/combat.js";
-import { computeStats, scaleStats } from "../core/stats.js";
+import { scaleStats } from "../core/stats.js";
 import { addXp, rollDrops } from "../core/progression.js";
-import { createInventory, pickUp, equippedItems } from "../core/inventory.js";
+import { pickUp, equippedItems } from "../core/inventory.js";
 import { Npc } from "../core/npc.js";
 import { heroes, enemies, bosses, levels, items, moves, fx, npcs } from "../../data/registry.js";
 import { drawBackground, drawShadow, drawFighter, drawEffect, drawPickup, drawNpc, STREET_TOP, STREET_BOTTOM } from "./draw.js";
 import { drawHud, drawBanner, drawGoArrow } from "./hud.js";
+import { heroStatsFor } from "./runState.js";
 
 const MAX_ATTACKERS = 2;
 const HERO_LEAD_X = 200;
@@ -26,15 +27,9 @@ const BOSS_TRIGGER_DISTANCE = 380;
 const BOSS_MINION_DELAY = 2.5;
 const PLAYING_PHASES = new Set(["walk", "fight", "boss"]);
 
-export function heroStatsFor(run) {
-  const mike = heroes.get("mike");
-  return computeStats({ base: mike.stats, growth: mike.growth, level: run.progress.level, gear: equippedItems(run.inventory, items) });
-}
-
 export function createLevelScene(game, { run }) {
   const level = levels[run.levelIndex];
   const mike = heroes.get("mike");
-  run.inventory ??= createInventory();
   const hero = new Fighter({ def: mike, team: "hero", x: 60, y: 220, stats: heroStatsFor(run), moves, level: run.progress.level });
   hero.gear = equippedItems(run.inventory, items);
   if (run.heroHp) hero.hp = Math.min(run.heroHp, hero.stats.hp);

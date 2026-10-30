@@ -3,7 +3,7 @@ import { getImage } from "../engine/assets.js";
 import { STAT_KEYS } from "../core/stats.js";
 import { equipFromBag, unequip, statDelta } from "../core/inventory.js";
 import { heroes, items } from "../../data/registry.js";
-import { heroStatsFor } from "./levelScene.js";
+import { heroStatsFor } from "./runState.js";
 import { drawPanel, drawButton, tappedButton, statLabel, formatStat } from "./ui.js";
 
 const SLOT_LABELS = { head: "HEAD", body: "BODY", hands: "HANDS", feet: "FEET" };
