@@ -1,0 +1,11 @@
+{
+  "name": "mikebrawl",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Mobile-first 2D brawler. Plain ES modules, no dependencies.",
+  "scripts": {
+    "test": "node --test",
+    "start": "python3 -m http.server 8080"
+  }
+}
