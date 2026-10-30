@@ -16,28 +16,34 @@ function median(values) {
   return sorted[Math.floor(sorted.length / 2)] ?? 0;
 }
 
-// Average of the four corner patches. Corners that are see-through mean the image already has transparency.
-export function backgroundColor(img) {
-  const sum = { r: 0, g: 0, b: 0, a: 0, n: 0 };
+function patchColor(img, cx, cy, size) {
+  const sum = { r: 0, g: 0, b: 0, a: 0 };
+  for (let y = cy; y < cy + size; y += 1) {
+    for (let x = cx; x < cx + size; x += 1) {
+      const i = offset(img, x, y);
+      sum.r += img.data[i];
+      sum.g += img.data[i + 1];
+      sum.b += img.data[i + 2];
+      sum.a += img.data[i + 3];
+    }
+  }
+  const n = size * size;
+  return { r: sum.r / n, g: sum.g / n, b: sum.b / n, transparent: sum.a / n < 128 };
+}
+
+// The corner colour most corners agree on (top corners win ties, since a sky or backdrop is on top).
+// See-through corners mean the image already has transparency.
+export function backgroundColor(img, tolerance = 40) {
   const size = Math.min(CORNER, img.width, img.height);
-  [
+  const corners = [
     [0, 0],
     [img.width - size, 0],
     [0, img.height - size],
     [img.width - size, img.height - size],
-  ].forEach(([cx, cy]) => {
-    for (let y = cy; y < cy + size; y += 1) {
-      for (let x = cx; x < cx + size; x += 1) {
-        const i = offset(img, x, y);
-        sum.r += img.data[i];
-        sum.g += img.data[i + 1];
-        sum.b += img.data[i + 2];
-        sum.a += img.data[i + 3];
-        sum.n += 1;
-      }
-    }
-  });
-  return { r: sum.r / sum.n, g: sum.g / sum.n, b: sum.b / sum.n, transparent: sum.a / sum.n < 128 };
+  ].map(([x, y]) => patchColor(img, x, y, size));
+  const close = (a, b) => a.transparent === b.transparent && (a.transparent || Math.hypot(a.r - b.r, a.g - b.g, a.b - b.b) <= tolerance);
+  const votes = corners.map((a) => corners.filter((b) => close(a, b)).length);
+  return corners[votes.indexOf(Math.max(...votes))];
 }
 
 // 1 = part of the drawing, 0 = background. Also trims the one-pixel halo of background-tinted edge pixels.
@@ -48,17 +54,39 @@ export function foregroundMask(img, bg = backgroundColor(img), tolerance = 80) {
     const i = p * 4;
     mask[p] = data[i + 3] >= 128 && (bg.transparent || colorDistance(data, i, bg) > tolerance) ? 1 : 0;
   }
-  if (bg.transparent) return mask;
-  const trimmed = mask.slice();
-  for (let y = 1; y < height - 1; y += 1) {
-    for (let x = 1; x < width - 1; x += 1) {
-      const p = y * width + x;
-      if (!mask[p]) continue;
-      const touchesBackground = !mask[p - 1] || !mask[p + 1] || !mask[p - width] || !mask[p + width];
-      if (touchesBackground && colorDistance(data, p * 4, bg) < tolerance * FRINGE_FACTOR) trimmed[p] = 0;
+  if (!bg.transparent) {
+    const halo = mask.slice();
+    for (let y = 1; y < height - 1; y += 1) {
+      for (let x = 1; x < width - 1; x += 1) {
+        const p = y * width + x;
+        if (!halo[p]) continue;
+        const touchesBackground = !halo[p - 1] || !halo[p + 1] || !halo[p - width] || !halo[p + width];
+        if (touchesBackground && colorDistance(data, p * 4, bg) < tolerance * FRINGE_FACTOR) mask[p] = 0;
+      }
     }
   }
-  return trimmed;
+  return removeSpecks(mask, width, height);
+}
+
+// Drops lone pixels (compression noise) that would otherwise stretch a pose's box.
+function removeSpecks(mask, width, height) {
+  const clean = mask.slice();
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const p = y * width + x;
+      if (!mask[p]) continue;
+      let neighbours = 0;
+      for (let dy = -1; dy <= 1; dy += 1) {
+        for (let dx = -1; dx <= 1; dx += 1) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if ((dx || dy) && nx >= 0 && ny >= 0 && nx < width && ny < height) neighbours += mask[ny * width + nx];
+        }
+      }
+      if (neighbours < 2) clean[p] = 0;
+    }
+  }
+  return clean;
 }
 
 function columnCounts(mask, width, height, x0 = 0, x1 = width - 1) {

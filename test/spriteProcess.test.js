@@ -23,6 +23,13 @@ test("the flat background colour is read from the corners, transparency is detec
   assert.equal(backgroundColor(image(40, 20, [0, 0, 0, 0])).transparent, true);
 });
 
+test("a building panel with a pink sky on top and brick at the bottom keys out the sky", () => {
+  const img = image(40, 40);
+  paint(img, 0, 20, 40, 20, [110, 60, 55, 255]);
+  const bg = backgroundColor(img);
+  assert.deepEqual([Math.round(bg.r), Math.round(bg.g), Math.round(bg.b)], [255, 0, 255]);
+});
+
 test("poses on a pink strip are found left to right with tight boxes", () => {
   const img = image(300, 100);
   paint(img, 20, 30, 40, 60);
@@ -45,6 +52,15 @@ test("near-pink edge pixels (the halo AI images leave) are not part of the pose"
   paint(img, 9, 10, 1, 20, [235, 60, 225, 255]);
   const [box] = figures(img, 1);
   assert.equal(box.x0, 10);
+});
+
+test("lone noise pixels above and below a pose don't stretch its box", () => {
+  const img = image(100, 100);
+  paint(img, 30, 30, 20, 40);
+  paint(img, 40, 2, 1, 1, [255, 255, 255, 255]);
+  paint(img, 35, 97, 1, 1, [255, 255, 255, 255]);
+  const [box] = figures(img, 1);
+  assert.deepEqual([box.y0, box.y1], [30, 69]);
 });
 
 test("tiny specks are ignored and a detached fist stays with its pose", () => {
