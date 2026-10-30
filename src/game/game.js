@@ -7,6 +7,7 @@ import { WIDTH, HEIGHT } from "../engine/renderer.js";
 import { imageSources, levels } from "../../data/registry.js";
 import { createLevelScene } from "./levelScene.js";
 import { createEquipScene } from "./equipScene.js";
+import { createRun } from "./runState.js";
 
 function createBootScene(game) {
   let progress = 0;
@@ -22,10 +23,6 @@ function createBootScene(game) {
   };
 }
 
-function newRun() {
-  return { levelIndex: 0, progress: { level: 1, xp: 0 }, totalXp: 0, kills: 0, heroHp: null };
-}
-
 export function createGame({ renderer, input }) {
   const audio = createAudio({ sounds, music });
   const game = { renderer, input, audio, sfx: audio.sfx, music: audio.music };
@@ -36,7 +33,7 @@ export function createGame({ renderer, input }) {
 
   game.flow = {
     startRun() {
-      scenes.go("level", { run: newRun() });
+      scenes.go("level", { run: createRun() });
     },
     levelComplete(run) {
       if (run.levelIndex + 1 >= levels.length) {
