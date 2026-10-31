@@ -24,7 +24,7 @@ You need: a **Suno** account (music) and an **ElevenLabs** account (voices and e
 4. Paste this into **Exclude styles** (every track):
 
 ```
-Middle Eastern, Arabic, oud, darbuka, belly dance, ethnic, world music, vocals
+vocals, singing, orchestral, acoustic, folk
 ```
 
 5. Press **Create**. Suno makes 2 versions. Listen to both.
