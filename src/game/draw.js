@@ -3,6 +3,7 @@ import { getImage } from "../engine/assets.js";
 import { attackBox } from "../core/combat.js";
 import { createRng } from "../core/progression.js";
 import { spritePath, gearPath, backgroundPath, NEAR_PANELS } from "../../data/registry.js";
+import { streetLayout } from "./streetLayout.js";
 
 export const SIDEWALK_TOP = 150;
 export const STREET_TOP = 180;
@@ -50,10 +51,22 @@ function tileRow(r, images, scroll) {
   }
 }
 
+function drawStreet(r, street, camX) {
+  streetLayout(street, camX, camX + WIDTH).forEach(({ img, x, w }) => {
+    r.ctx.drawImage(img, 0, 0, w, img.height, Math.round(x - camX), SIDEWALK_TOP - img.height, w, img.height);
+  });
+}
+
 export function drawBackground(r, level, camX) {
-  const { palette } = level.background;
+  const { palette, landmarks = {} } = level.background;
   const farImage = getImage(backgroundPath(level, "far"));
-  const panels = Array.from({ length: NEAR_PANELS }, (_, i) => getImage(backgroundPath(level, `near${i + 1}`))).filter(Boolean);
+  const street = {
+    panels: Array.from({ length: NEAR_PANELS }, (_, i) => getImage(backgroundPath(level, `near${i + 1}`))).filter(Boolean),
+    start: landmarks.start && getImage(backgroundPath(level, landmarks.start)),
+    end: landmarks.end && getImage(backgroundPath(level, landmarks.end)),
+    length: level.length,
+  };
+  const hasArt = street.panels.length > 0 || Boolean(street.start || street.end);
   if (!sceneryCache.has(level.id)) sceneryCache.set(level.id, buildScenery(level));
   const scenery = sceneryCache.get(level.id);
 
@@ -70,8 +83,8 @@ export function drawBackground(r, level, camX) {
     });
   }
 
-  if (panels.length) {
-    tileRow(r, panels, camX);
+  if (hasArt) {
+    drawStreet(r, street, camX);
   } else {
     scenery.buildings.forEach((b) => {
       const x = b.x - camX;
@@ -91,7 +104,7 @@ export function drawBackground(r, level, camX) {
   r.rect(0, STREET_TOP - 3, WIDTH, 3, palette.line);
   r.rect(0, STREET_TOP, WIDTH, HEIGHT - STREET_TOP, palette.street);
   for (let x = -(camX % 60); x < WIDTH; x += 60) r.rect(x, 226, 26, 2, palette.line);
-  if (panels.length) return;
+  if (hasArt) return;
   for (let x = -(camX % 240) + 40; x < WIDTH + 20; x += 240) {
     r.rect(x, 70, 3, SIDEWALK_TOP + 10 - 70, "#222");
     r.rect(x - 4, 66, 12, 5, palette.window);

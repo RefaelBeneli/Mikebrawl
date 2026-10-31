@@ -201,7 +201,7 @@ Mike walks home from his gym in Hadar, up to the Carmel, to his home in Romema.
 | `level2` | Upper Carmel (Merkaz HaCarmel) | night | cafés, hotels, pine trees, the bay lights far below |
 | `level3` | Romema | late night | quiet 1960s apartment blocks on the slope, Mike's home at the end |
 
-Each level has one **far** skyline (loops left to right) and 4 **near** panels. The near panels sit on the sidewalk line; the game draws the sidewalk and road.
+Each level has one **far** skyline (loops left to right) and 4 **near** panels that repeat along the street. Level 1 also has `gym.png`, shown once at the start; level 3 has `home.png`, shown once at the end. The panels sit on the sidewalk line; the game draws the sidewalk and road.
 
 **Signs:** AI draws broken Hebrew letters. Every prompt asks for sign shapes and icons only, no letters.
 
@@ -215,10 +215,16 @@ Each level has one **far** skyline (loops left to right) and 4 **near** panels. 
 Pixel art side-scrolling game background, a wide panorama that loops seamlessly left to right: the city of Haifa, Israel at sunset seen from Hadar HaCarmel. In the distance the port of Haifa with big container cranes, the blue Mediterranean bay, the tall Sail Tower office building and the Haifa Bay oil refinery chimneys on the far shore. Behind and above, the green slope of Mount Carmel with white houses, and the golden dome of the Bahai Shrine among terraced gardens. Orange and purple sunset sky. No ground, no street, no characters, no text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 21:9 image.
 ```
 
-#### `assets/backgrounds/level1/near1.png`: Mike's gym
+#### `assets/backgrounds/level1/gym.png`: Mike's gym (shown once, where the level starts)
 
 ```
 Pixel art side view, seen straight from the front: an old 1930s Bauhaus-style building in Hadar HaCarmel, Haifa, Israel, with a boxing gym on the ground floor. Big glass gym windows showing punching bags inside, a sign with only a red boxing glove icon. Above it, two floors of white plastered apartments with rounded corner balconies, metal railings, rolling shutters, AC units, and solar water heater tanks on the flat roof. The building fills the image from the bottom edge up; the bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. Sunset light, orange and purple tones. No sidewalk, no street, no characters, no letters or readable text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.
+```
+
+#### `assets/backgrounds/level1/near1.png`: Nordau Street
+
+```
+Pixel art side view, seen straight from the front: an old pedestrian shopping street in Hadar HaCarmel, Haifa, Israel. A grand 1930s Bauhaus building with long curved balconies, a glass stairwell of narrow vertical windows, white and cream plaster with weathered stains. On the ground floor, an old café with chairs outside under a faded awning and a closed jewelry shop with a metal shutter. Rolling shutters, AC units, and solar water heater tanks on the flat roof. The building fills the image from the bottom edge up; the bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. Sunset light, orange and purple tones. No sidewalk, no street, no characters, no letters or readable text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.
 ```
 
 #### `assets/backgrounds/level1/near2.png`: Talpiot Market
@@ -297,7 +303,13 @@ Pixel art side view, seen straight from the front: the side of the Romema sports
 Pixel art side view, seen straight from the front: a quiet neighborhood corner in Romema, Haifa, Israel, at late night. A small closed corner grocery (makolet) with a metal roll-down shutter, a lit 24-hour kiosk window, green and orange recycling bins, an old olive tree, and outdoor stone steps climbing up the slope between low apartment buildings with pine trees. The scene fills the image from the bottom edge up; the bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. Late night, orange street light and dark grey-blue. No sidewalk, no street, no characters, no letters or readable text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.
 ```
 
-#### `assets/backgrounds/level3/near4.png`: Mike's home
+#### `assets/backgrounds/level3/near4.png`: Palmach Boulevard
+
+```
+Pixel art side view, seen straight from the front: a quiet tree-lined boulevard in Romema, Haifa, Israel, at late night. A row of big old trees and pine trees, a bus stop shelter with a bench and a bus icon sign, a stone retaining wall with steps going up the hill, and low 1940s apartment buildings behind with a few lit windows, rolling shutters and solar water heater tanks on the roofs. The scene fills the image from the bottom edge up; the bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. Late night, orange street light and dark grey-blue. No sidewalk, no street, no characters, no letters or readable text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.
+```
+
+#### `assets/backgrounds/level3/home.png`: Mike's home (shown once, where the level ends)
 
 ```
 Pixel art side view, seen straight from the front: Mike's home, a 4-floor apartment building in Romema, Haifa, Israel, at late night, with light stone walls, balconies with rolling shutters and plants, solar water heater tanks on the roof, a front garden with a low stone wall, mailboxes, and a warm lit glass entrance door that feels welcoming. Pine and olive trees around it. The scene fills the image from the bottom edge up; the bottom edge is the ground line. The sky behind it is solid flat magenta #FF00FF. Late night, orange street light and dark grey-blue, warm light from the doorway. No sidewalk, no street, no characters, no letters or readable text. 16-bit retro beat 'em up background like Streets of Rage, crisp pixels, limited palette. Wide 4:3 image.

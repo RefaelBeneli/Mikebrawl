@@ -1,6 +1,6 @@
 export default {
   id: "level2",
-  name: "Dark Alley",
+  name: "Upper Carmel",
   length: 1440,
   music: "level2",
   bossMusic: "boss",

@@ -44,7 +44,12 @@ export function assetJobs() {
   ]);
   const backgrounds = levels.flatMap((level) => [
     { kind: "layer", src: backgroundPath(level, "far"), height: SIDEWALK_TOP },
-    ...Array.from({ length: NEAR_PANELS }, (_, i) => ({ kind: "layer", src: backgroundPath(level, `near${i + 1}`), height: SIDEWALK_TOP, keyed: true })),
+    ...[...Array.from({ length: NEAR_PANELS }, (_, i) => `near${i + 1}`), ...Object.values(level.background.landmarks ?? {})].map((file) => ({
+      kind: "layer",
+      src: backgroundPath(level, file),
+      height: SIDEWALK_TOP,
+      keyed: true,
+    })),
   ]);
   const effects = Object.values(fx).map((effect) => ({ kind: "strip", src: effect.sheet, cellW: effect.cellW, cellH: effect.cellH, poses: effect.frames, align: "center" }));
   return [...characters().flatMap(characterJobs), ...gear, ...backgrounds, ...effects, { src: GYM_BACKGROUND }];

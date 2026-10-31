@@ -83,6 +83,8 @@ Tell me "publish the sprites". I'll commit the files, update the offline cache, 
 | `assets/sprites/items/` | fight_gloves_icon, street_boots_icon, lucky_tank_icon, focus_headband_icon |
 | `assets/sprites/fx/` | hit_spark (3) |
 | `assets/backgrounds/level1/`, `level2/`, `level3/` | far, near1, near2, near3, near4 |
+| `assets/backgrounds/level1/` | gym (Mike's gym, shown once at the start) |
+| `assets/backgrounds/level3/` | home (Mike's home, shown once at the end) |
 | `assets/backgrounds/` | gym |
 
 All files are `.png`. Names are lowercase, exactly as shown.

@@ -1,10 +1,11 @@
 export default {
   id: "level1",
-  name: "Gym Street",
+  name: "Hadar",
   length: 1440,
   music: "level1",
   bossMusic: "boss",
   background: {
+    landmarks: { start: "gym" },
     palette: {
       sky: ["#2b1d4a", "#e0784a"],
       far: "#3a2a55",

@@ -1,10 +1,11 @@
 export default {
   id: "level3",
-  name: "Parking Lot",
+  name: "Romema",
   length: 1440,
   music: "level3",
   bossMusic: "boss",
   background: {
+    landmarks: { end: "home" },
     palette: {
       sky: ["#000008", "#101830"],
       far: "#161c30",
