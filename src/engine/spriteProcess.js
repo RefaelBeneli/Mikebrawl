@@ -164,6 +164,18 @@ function speckClouds(pieces, gap) {
   return clouds.sort((a, b) => b.area - a.area);
 }
 
+// Left to right, except poses stacked over each other (mostly the same columns): the upper one comes first.
+// AI strips often squeeze "falling" above "lying on the ground".
+function readingOrder(groups) {
+  groups.sort((a, b) => a.x0 + a.x1 - (b.x0 + b.x1));
+  const stacked = (a, b) => Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0) > 0.5 * Math.min(a.x1 - a.x0, b.x1 - b.x0);
+  for (let i = 1; i < groups.length; i += 1) {
+    for (let j = i; j > 0 && stacked(groups[j - 1], groups[j]) && groups[j].y1 < groups[j - 1].y0 + (groups[j - 1].y1 - groups[j - 1].y0) / 2; j -= 1) {
+      [groups[j - 1], groups[j]] = [groups[j], groups[j - 1]];
+    }
+  }
+}
+
 function owns(g, ids, width, p) {
   const x = p % width;
   return g.shapes.has(ids[p]) && x >= g.lo && x <= g.hi;
@@ -205,7 +217,8 @@ function measureGroup(g, ids, width, owner, label) {
 // Finds each pose as a connected shape (so an arm reaching over a neighbour's column stays with its body),
 // keeps small nearby pieces (a detached fist) with the closest pose, drops far specks, then forces the
 // count to `expected` by merging the closest poses or splitting the widest one.
-// Returns boxes left to right ({ id, x0, x1, y0, y1, area }) and `owner`: the pose id of every pixel (0 = none).
+// Returns boxes left to right ({ id, x0, x1, y0, y1, area }), `owner`: the pose id of every pixel (0 = none),
+// and `found`: how many poses the image really had before forcing the count (for warnings).
 export function segmentFigures(mask, width, height, expected) {
   const { ids, shapes } = connectedShapes(mask, width, height);
   const biggest = Math.max(0, ...shapes.map((s) => s.area));
@@ -221,16 +234,20 @@ export function segmentFigures(mask, width, height, expected) {
       else dropped.push(group(piece));
     });
   const groups = big;
+  let found = groups.length;
   if (expected && groups.length) {
     while (groups.length > expected) mergeSmallest(groups);
     const clouds = speckClouds(dropped, attachGap * 2).filter((c) => !groups.some((g) => c.x0 <= g.x1 && g.x0 <= c.x1));
-    while (groups.length < expected && clouds.length) groups.push(clouds.shift());
+    while (groups.length < expected && clouds.length) {
+      groups.push(clouds.shift());
+      found += 1;
+    }
     while (groups.length < expected) splitWidest(groups, ids, width);
   }
-  groups.sort((a, b) => a.x0 + a.x1 - (b.x0 + b.x1));
+  readingOrder(groups);
   const owner = new Int32Array(mask.length);
   const boxes = groups.map((g, i) => measureGroup(g, ids, width, owner, i + 1)).filter((box) => box.area > 0);
-  return { boxes, owner };
+  return { boxes, owner, found };
 }
 
 export function findFigures(mask, width, height, expected) {

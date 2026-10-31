@@ -123,6 +123,24 @@ test("a frame made only of scattered sparks still counts as a pose when one is m
   );
 });
 
+test("a pose drawn above another (falling over lying) comes first", () => {
+  const img = image(300, 100);
+  paint(img, 10, 20, 30, 70);
+  paint(img, 110, 5, 50, 35);
+  paint(img, 95, 70, 70, 20);
+  paint(img, 220, 20, 30, 70);
+  const boxes = figures(img, 4);
+  assert.deepEqual(
+    boxes.map(({ x0, y0 }) => [x0, y0]),
+    [
+      [10, 20],
+      [110, 5],
+      [95, 70],
+      [220, 20],
+    ],
+  );
+});
+
 test("gear just past a pose's edge goes to the pose it sits on", () => {
   const owner = new Int32Array(10 * 3);
   owner[1 * 10 + 2] = 1;

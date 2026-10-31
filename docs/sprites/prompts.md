@@ -164,7 +164,7 @@ Using the attached character exactly as it looks, draw one horizontal row of [N]
 
 ### Bosses: `assets/sprites/big_tony/…`, `viper/…`, `the_chief/…`
 
-Same `idle`, `walk` and `fall` as the thug, plus:
+Each boss needs 6 files in its own folder. For `idle`, `walk` and `fall`, use the thug's rows above but attach **that boss's** anchor. Then add:
 
 | File | N | POSES |
 | --- | --- | --- |
