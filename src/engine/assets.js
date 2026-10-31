@@ -1,6 +1,8 @@
-import { foregroundMask, findFigures, footAnchor, stripScale, fitScale, frameLayout } from "./spriteProcess.js";
+import { foregroundMask, segmentFigures, growOwner, footAnchor, stripScale, fitScale, frameLayout } from "./spriteProcess.js";
 
 const ALPHA_CUTOFF = 128;
+// How far (share of pose height) gear may stick out past Mike's body and still belong to that pose.
+const GEAR_REACH = 0.06;
 const images = new Map();
 const stripInfo = new Map();
 
@@ -27,8 +29,8 @@ function pixels(img, width = img.width, height = img.height) {
   return ctx.getImageData(0, 0, c.width, c.height);
 }
 
-// Copies one box of the raw image, keeping only drawing pixels.
-function cutout(raw, mask, box) {
+// Copies one box of the raw image, keeping only the pixels owned by `id`.
+function cutout(raw, owner, box, id = 1) {
   const w = box.x1 - box.x0 + 1;
   const h = box.y1 - box.y0 + 1;
   const piece = canvas(w, h);
@@ -37,7 +39,7 @@ function cutout(raw, mask, box) {
   for (let y = 0; y < h; y += 1) {
     for (let x = 0; x < w; x += 1) {
       const p = (box.y0 + y) * raw.width + box.x0 + x;
-      if (!mask[p]) continue;
+      if (owner[p] !== id) continue;
       out.data.set(raw.data.subarray(p * 4, p * 4 + 4), (y * w + x) * 4);
     }
   }
@@ -70,17 +72,21 @@ function processStrip(img, job) {
   let boxes;
   let scale;
   let anchors;
+  let owner;
   if (reference) {
     ({ boxes, scale, anchors } = reference);
+    const reach = Math.round(Math.max(...boxes.map((b) => b.y1 - b.y0 + 1)) * GEAR_REACH);
+    const grown = growOwner(reference.owner, raw.width, raw.height, reach);
+    owner = mask.map((on, p) => (on ? grown[p] : 0));
   } else {
-    boxes = findFigures(mask, raw.width, raw.height, job.poses);
+    ({ boxes, owner } = segmentFigures(mask, raw.width, raw.height, job.poses));
     if (!boxes.length) return null;
     const base = job.scaleFrom && stripInfo.get(job.scaleFrom);
     const wanted = stripScale(boxes, base ? { referenceArea: base.area } : { targetHeight: job.targetHeight ?? job.cellH });
     scale = fitScale(boxes, job.cellW, job.cellH, wanted);
-    anchors = boxes.map((box) => footAnchor(mask, raw.width, box));
+    anchors = boxes.map((box) => footAnchor(owner, raw.width, box));
     const areas = boxes.map((b) => b.area).sort((a, b) => a - b);
-    stripInfo.set(job.src, { width: raw.width, height: raw.height, boxes, scale, anchors, area: areas[Math.floor(areas.length / 2)] * scale ** 2 });
+    stripInfo.set(job.src, { width: raw.width, height: raw.height, boxes, owner, scale, anchors, area: areas[Math.floor(areas.length / 2)] * scale ** 2 });
   }
   const sheet = canvas(job.cellW * boxes.length, job.cellH);
   const ctx = sheet.getContext("2d");
@@ -90,7 +96,7 @@ function processStrip(img, job) {
     ctx.beginPath();
     ctx.rect(i * job.cellW, 0, job.cellW, job.cellH);
     ctx.clip();
-    drawScaled(ctx, cutout(raw, mask, box), i * job.cellW + dx, dy, dw, dh);
+    drawScaled(ctx, cutout(raw, owner, box, box.id), i * job.cellW + dx, dy, dw, dh);
     ctx.restore();
   });
   return hardenAlpha(sheet);
@@ -99,12 +105,12 @@ function processStrip(img, job) {
 function processIcon(img, job) {
   const raw = pixels(img);
   const mask = foregroundMask(raw);
-  const [box] = findFigures(mask, raw.width, raw.height, 1);
+  const { boxes: [box], owner } = segmentFigures(mask, raw.width, raw.height, 1);
   if (!box) return null;
   const icon = canvas(job.size, job.size);
   const scale = fitScale([box], job.size, job.size + 1, Infinity);
   const { dx, dy, dw, dh } = frameLayout(box, { anchorX: 0, scale, cellW: job.size, cellH: job.size, align: "center" });
-  drawScaled(icon.getContext("2d"), cutout(raw, mask, box), dx, dy, dw, dh);
+  drawScaled(icon.getContext("2d"), cutout(raw, owner, box, box.id), dx, dy, dw, dh);
   return hardenAlpha(icon);
 }
 

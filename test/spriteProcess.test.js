@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { backgroundColor, foregroundMask, findFigures, footAnchor, stripScale, fitScale, frameLayout } from "../src/engine/spriteProcess.js";
+import { backgroundColor, foregroundMask, findFigures, segmentFigures, growOwner, footAnchor, stripScale, fitScale, frameLayout } from "../src/engine/spriteProcess.js";
 
 const PINK = [255, 0, 255, 255];
 const SKIN = [200, 150, 110, 255];
@@ -90,6 +90,45 @@ test("extra pieces are merged into the closest pose when more poses than expecte
   paint(img, 70, 20, 30, 70);
   paint(img, 200, 20, 40, 70);
   assert.equal(figures(img, 2).length, 2);
+});
+
+test("a jab reaching over the next pose's columns stays with its own body", () => {
+  const img = image(200, 100);
+  paint(img, 20, 20, 30, 70);
+  paint(img, 50, 30, 50, 6);
+  paint(img, 90, 40, 30, 50);
+  const { boxes, owner } = segmentFigures(foregroundMask(img), img.width, img.height, 2);
+  assert.deepEqual(
+    boxes.map(({ x0, x1 }) => [x0, x1]),
+    [
+      [20, 99],
+      [90, 119],
+    ],
+  );
+  assert.equal(owner[33 * 200 + 95], boxes[0].id, "the fist over pose 2 belongs to pose 1");
+  assert.equal(owner[60 * 200 + 95], boxes[1].id);
+});
+
+test("a frame made only of scattered sparks still counts as a pose when one is missing", () => {
+  const img = image(300, 100);
+  paint(img, 20, 20, 60, 60);
+  [200, 208, 216, 224].forEach((x, i) => paint(img, x, 30 + i * 10, 4, 4));
+  const boxes = figures(img, 2);
+  assert.deepEqual(
+    boxes.map(({ x0, x1 }) => [x0, x1]),
+    [
+      [20, 79],
+      [200, 227],
+    ],
+  );
+});
+
+test("gear just past a pose's edge goes to the pose it sits on", () => {
+  const owner = new Int32Array(10 * 3);
+  owner[1 * 10 + 2] = 1;
+  owner[1 * 10 + 7] = 2;
+  const grown = growOwner(owner, 10, 3, 2);
+  assert.deepEqual([grown[1 * 10 + 4], grown[1 * 10 + 5], grown[1 * 10 + 9], grown[1 * 10 + 0]], [1, 2, 2, 1]);
 });
 
 test("the feet anchor ignores an extended arm", () => {
