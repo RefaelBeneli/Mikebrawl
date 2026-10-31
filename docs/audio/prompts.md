@@ -30,38 +30,38 @@ Middle Eastern, Arabic, oud, darbuka, belly dance, ethnic, world music, vocals
 5. Press **Create**. Suno makes 2 versions. Listen to both.
 6. Download the better one as **MP3** and name it as shown.
 
-All tracks share one style: 16-bit Sega arcade music, like Streets of Rage, with synths, funky bass and 90s drums. Songs of 2-3 minutes are fine; the game loops the whole file.
+All tracks share one style: 90s Japanese arcade music, like Streets of Rage: electronic synths, funky bass, house and breakbeat drums. Songs of 2-3 minutes are fine; the game loops the whole file.
 
 ### 2.1 Title screen → `title.mp3`
 
 Plays on the title and gym screens.
 
 ```
-16-bit Sega Genesis FM synth instrumental, retro beat 'em up title theme like Streets of Rage, confident heroic synth lead melody, punchy slap FM bass, 90s breakbeat drums, gritty urban arcade feel, 118 BPM, seamless loop, instrumental, no vocals
+16-bit Sega Genesis FM synth instrumental, 90s Japanese arcade video game music by Yuzo Koshiro, retro beat 'em up title theme like Streets of Rage, confident heroic synth lead melody, punchy slap FM bass, 90s breakbeat drums, gritty urban arcade feel, 118 BPM, seamless loop, instrumental, no vocals
 ```
 
 ### 2.2 Level 1, Hadar at sunset → `level1.mp3`
 
 ```
-16-bit Sega Genesis FM synth instrumental, beat 'em up stage 1 theme like Streets of Rage, upbeat funky city groove, driving slap bass, catchy bright synth lead, 90s house piano stabs, warm sunset downtown street energy, 128 BPM, seamless loop, instrumental, no vocals
+16-bit Sega Genesis FM synth instrumental, 90s Japanese arcade video game music by Yuzo Koshiro, beat 'em up stage 1 theme like Streets of Rage, upbeat funky city groove, driving slap bass, catchy bright synth lead, 90s house piano stabs, warm sunset downtown street energy, 128 BPM, seamless loop, instrumental, no vocals
 ```
 
 ### 2.3 Level 2, Upper Carmel at night → `level2.mp3`
 
 ```
-16-bit Sega Genesis FM synth instrumental, beat 'em up night stage theme like Streets of Rage 2, cool smooth late night city vibe, jazzy electric piano chords, deep rolling bass, crisp breakbeat, glittering arpeggios like city lights far below, minor key, 112 BPM, seamless loop, instrumental, no vocals
+16-bit Sega Genesis FM synth instrumental, 90s Japanese arcade video game music by Yuzo Koshiro, beat 'em up night stage theme like Streets of Rage 2, cool smooth late night city vibe, jazzy electric piano chords, deep rolling bass, crisp breakbeat, glittering arpeggios like city lights far below, smooth 90s Japanese city pop chords, 112 BPM, seamless loop, instrumental, no vocals
 ```
 
 ### 2.4 Level 3, Romema, almost home → `level3.mp3`
 
 ```
-16-bit Sega Genesis FM synth instrumental, final stage theme of a retro beat 'em up, tense and determined but hopeful, fast arpeggiated synth bass, soaring heroic lead, building energy, quiet sleeping neighborhood at 2am, almost home feeling, 140 BPM, seamless loop, instrumental, no vocals
+16-bit Sega Genesis FM synth instrumental, 90s Japanese arcade video game music by Yuzo Koshiro, final stage theme of a retro beat 'em up, tense and determined but hopeful, fast arpeggiated synth bass, soaring heroic lead, building energy, quiet sleeping neighborhood at 2am, almost home feeling, 140 BPM, seamless loop, instrumental, no vocals
 ```
 
 ### 2.5 Boss fights → `boss.mp3`
 
 ```
-16-bit Sega Genesis FM synth instrumental, intense boss battle theme like Streets of Rage, aggressive distorted FM bass, alarm-like synth stabs, heavy techno drums, high energy danger, 155 BPM, seamless loop, instrumental, no vocals
+16-bit Sega Genesis FM synth instrumental, 90s Japanese arcade video game music by Yuzo Koshiro, intense boss battle theme like Streets of Rage, aggressive distorted FM bass, alarm-like synth stabs, heavy techno drums, high energy danger, 155 BPM, seamless loop, instrumental, no vocals
 ```
 
 ### 2.6 Level clear → `victory.mp3`
@@ -69,7 +69,7 @@ Plays on the title and gym screens.
 A short jingle. Make it in **ElevenLabs Sound Effects** (see Step 3), duration 8 seconds. Suno can't make songs this short.
 
 ```
-16-bit Sega Genesis FM synth short victory fanfare jingle, triumphant rising synth brass melody, ends on a strong major chord, 8 seconds, no loop, instrumental, no vocals
+16-bit Sega Genesis FM synth, 90s Japanese arcade video game jingle, short victory fanfare jingle, triumphant rising synth brass melody, ends on a strong major chord, 8 seconds, no loop, instrumental, no vocals
 ```
 
 ### 2.7 Game over → `gameover.mp3`
@@ -77,7 +77,7 @@ A short jingle. Make it in **ElevenLabs Sound Effects** (see Step 3), duration 8
 A short jingle. Make it in **ElevenLabs Sound Effects**, duration 6 seconds.
 
 ```
-16-bit Sega Genesis FM synth short game over jingle, sad slow descending synth melody, ends softly, 6 seconds, no loop, instrumental, no vocals
+16-bit Sega Genesis FM synth, 90s Japanese arcade video game jingle, short game over jingle, sad slow descending synth melody, ends softly, 6 seconds, no loop, instrumental, no vocals
 ```
 
 ---
