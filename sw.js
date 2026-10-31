@@ -1,5 +1,5 @@
 // Offline support. Bump CACHE when shipping a new version so old files are dropped.
-const CACHE = "mikebrawl-v3";
+const CACHE = "mikebrawl-v4";
 
 const sameOrigin = (url) => new URL(url, self.location.href).origin === self.location.origin;
 

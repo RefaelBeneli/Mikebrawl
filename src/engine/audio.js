@@ -13,7 +13,7 @@ function loadSettings() {
   }
 }
 
-function makeNoise(ctx) {
+export function makeNoise(ctx) {
   const buffer = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1;
@@ -29,6 +29,41 @@ async function loadBuffer(ctx, url) {
   } catch {
     return null;
   }
+}
+
+// Plays one sfx layer (see data/sounds.js for the fields).
+export function playLayer(ctx, noise, layer, destination, start, rate = 1) {
+  const duration = layer.dur;
+  const volume = layer.vol ?? 0.3;
+  const attack = Math.min(layer.attack ?? 0, duration / 2);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(attack ? 0.0001 : volume, start);
+  if (attack) gain.gain.linearRampToValueAtTime(volume, start + attack);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  let source;
+  if (layer.wave === "noise") {
+    source = ctx.createBufferSource();
+    source.buffer = noise;
+    source.playbackRate.value = rate;
+  } else {
+    source = ctx.createOscillator();
+    source.type = layer.wave;
+    source.frequency.setValueAtTime(layer.from * rate, start);
+    if (layer.to) source.frequency.exponentialRampToValueAtTime(layer.to * rate, start + duration);
+    if (layer.detune) source.detune.value = layer.detune;
+  }
+  let node = source;
+  if (layer.filter) {
+    const filter = ctx.createBiquadFilter();
+    filter.type = layer.filter.type ?? "lowpass";
+    filter.frequency.setValueAtTime(layer.filter.freq, start);
+    if (layer.filter.to) filter.frequency.exponentialRampToValueAtTime(layer.filter.to, start + duration);
+    if (layer.filter.q) filter.Q.value = layer.filter.q;
+    node = node.connect(filter);
+  }
+  node.connect(gain).connect(destination);
+  source.start(start);
+  source.stop(start + duration + 0.02);
 }
 
 export function createAudio({ sounds, music }) {
@@ -94,37 +129,9 @@ export function createAudio({ sounds, music }) {
     else ctx.resume();
   });
 
-  function synthLayer(layer, destination, start, rate) {
-    const duration = layer.dur;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(layer.vol ?? 0.3, start);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-    let source;
-    if (layer.wave === "noise") {
-      source = ctx.createBufferSource();
-      source.buffer = noise;
-      source.playbackRate.value = rate;
-    } else {
-      source = ctx.createOscillator();
-      source.type = layer.wave;
-      source.frequency.setValueAtTime(layer.from * rate, start);
-      if (layer.to) source.frequency.exponentialRampToValueAtTime(layer.to * rate, start + duration);
-    }
-    let node = source;
-    if (layer.filter) {
-      const filter = ctx.createBiquadFilter();
-      filter.type = layer.filter.type ?? "lowpass";
-      filter.frequency.value = layer.filter.freq;
-      node = node.connect(filter);
-    }
-    node.connect(gain).connect(destination);
-    source.start(start);
-    source.stop(start + duration + 0.02);
-  }
-
   function playSynth(synth, rate) {
     const start = ctx.currentTime;
-    synth.forEach((layer) => synthLayer(layer, buses.sfx, start + (layer.delay ?? 0), rate));
+    synth.forEach((layer) => playLayer(ctx, noise, layer, buses.sfx, start + (layer.delay ?? 0), rate));
   }
 
   function sfx(id) {
