@@ -1,8 +1,21 @@
 # Audio prompts
 
-One copy-paste prompt per sound. Save each result as MP3 at the listed path. The game uses it automatically; until then it plays a code-made 8-bit placeholder.
+One copy-paste prompt per sound. Every sound is optional: until a file exists, the game plays its own code-made 8-bit sound.
 
-Suggested tools: **Suno** or **Udio** for music, **ElevenLabs Sound Effects** (or similar) for voices and effects.
+## Walkthrough
+
+1. **Music: Suno** (or Udio)
+   - Pick *Custom*, turn on *Instrumental*.
+   - Paste the prompt into *Style of Music*.
+   - Paste the "Exclude" line into *Exclude styles* (so it doesn't drift to a Middle Eastern sound).
+   - Make 2 versions, keep the one you like, download as MP3.
+2. **Voices and effects: ElevenLabs Sound Effects**
+   - Paste the prompt, set the length to the seconds listed, download as MP3.
+3. **Name and save:** rename to the file name in the table, save into `assets/audio/music/` or `assets/audio/sfx/`.
+   - Or drop everything in one folder (e.g. `~/Downloads/audio`) and tell me. I'll rename, check and place them.
+4. **Test:** run `python3 -m http.server 8080` in the project folder, open <http://localhost:8080>, tap once to turn sound on.
+
+Example: the Hadar music → `assets/audio/music/level1.mp3`. Mike's punch grunt → `assets/audio/sfx/mike_punch.mp3`.
 
 ## Rules
 
@@ -20,47 +33,56 @@ Suggested tools: **Suno** or **Udio** for music, **ElevenLabs Sound Effects** (o
 | File | Use | Length |
 |---|---|---|
 | `title.mp3` | title + gym screens | 60-90 s loop |
-| `level1.mp3` | Gym Street | 60-90 s loop |
-| `level2.mp3` | Dark Alley | 60-90 s loop |
-| `level3.mp3` | Parking Lot | 60-90 s loop |
+| `level1.mp3` | Hadar (sunset) | 60-90 s loop |
+| `level2.mp3` | Upper Carmel (night) | 60-90 s loop |
+| `level3.mp3` | Romema (late night, almost home) | 60-90 s loop |
 | `boss.mp3` | every boss fight | 45-60 s loop |
 | `victory.mp3` | stage clear / made it home | 6-10 s, no loop |
 | `gameover.mp3` | K.O. screen | 5-8 s, no loop |
 
+Style: 16-bit Sega Genesis arcade music, like Streets of Rage (Yuzo Koshiro): FM synth, funky basslines, 90s house and breakbeat drums.
+
+**Exclude styles** (paste for every track):
+```
+Middle Eastern, Arabic, oud, darbuka, belly dance, ethnic, world music, vocals
+```
+
 **title.mp3**
 ```
-8-bit chiptune NES style instrumental, retro beat 'em up title theme, confident heroic melody on square wave lead, punchy triangle bass, noise drums, mid tempo 120 BPM, gritty urban 90s arcade feel, seamless loop, no vocals
+16-bit Sega Genesis FM synth instrumental, retro beat 'em up title theme like Streets of Rage, confident heroic synth lead melody, punchy slap FM bass, 90s breakbeat drums, gritty urban arcade feel, 118 BPM, seamless loop, instrumental, no vocals
 ```
 
-**level1.mp3**
+**level1.mp3** (Hadar, sunset downtown)
 ```
-8-bit chiptune instrumental, retro beat 'em up stage 1 theme like Streets of Rage, energetic driving bassline, catchy square wave lead melody, upbeat street fighting action at sunset, 140 BPM, seamless loop, no vocals
-```
-
-**level2.mp3**
-```
-8-bit chiptune instrumental, retro beat 'em up night alley stage theme, darker minor key, tense pulsing bass arpeggios, sneaky square lead, echoing noise percussion, 135 BPM, seamless loop, no vocals
+16-bit Sega Genesis FM synth instrumental, beat 'em up stage 1 theme like Streets of Rage, upbeat funky city groove, driving slap bass, catchy bright synth lead, 90s house piano stabs, warm sunset downtown street energy, 128 BPM, seamless loop, instrumental, no vocals
 ```
 
-**level3.mp3**
+**level2.mp3** (Upper Carmel, night)
 ```
-8-bit chiptune instrumental, final stage theme of a retro beat 'em up, determined and heroic but tense, fast arpeggiated bass, soaring square wave lead, almost home feeling, 150 BPM, seamless loop, no vocals
+16-bit Sega Genesis FM synth instrumental, beat 'em up night stage theme like Streets of Rage 2, cool smooth late night city vibe, jazzy electric piano chords, deep rolling bass, crisp breakbeat, glittering arpeggios like city lights far below, minor key, 112 BPM, seamless loop, instrumental, no vocals
+```
+
+**level3.mp3** (Romema, late night, almost home)
+```
+16-bit Sega Genesis FM synth instrumental, final stage theme of a retro beat 'em up, tense and determined but hopeful, fast arpeggiated synth bass, soaring heroic lead, building energy, quiet sleeping neighborhood at 2am, almost home feeling, 140 BPM, seamless loop, instrumental, no vocals
 ```
 
 **boss.mp3**
 ```
-8-bit chiptune instrumental, intense boss battle theme, aggressive fast bass, alarm-like square wave stabs, heavy noise drums, high energy danger, 160 BPM, seamless loop, no vocals
+16-bit Sega Genesis FM synth instrumental, intense boss battle theme like Streets of Rage, aggressive distorted FM bass, alarm-like synth stabs, heavy techno drums, high energy danger, 155 BPM, seamless loop, instrumental, no vocals
 ```
 
 **victory.mp3**
 ```
-8-bit chiptune short victory fanfare jingle, triumphant rising square wave melody, ends on a strong major chord, 8 seconds, no loop, no vocals
+16-bit Sega Genesis FM synth short victory fanfare jingle, triumphant rising synth brass melody, ends on a strong major chord, 8 seconds, no loop, instrumental, no vocals
 ```
 
 **gameover.mp3**
 ```
-8-bit chiptune short game over jingle, sad descending square wave melody, slow, ends softly, 6 seconds, no loop, no vocals
+16-bit Sega Genesis FM synth short game over jingle, sad slow descending synth melody, ends softly, 6 seconds, no loop, instrumental, no vocals
 ```
+
+Suno songs are often 2-3 minutes; that's fine, the game loops the whole file. Short jingles: if Suno makes them long, tell me and I'll trim.
 
 ---
 
@@ -82,7 +104,7 @@ Suggested tools: **Suno** or **Udio** for music, **ElevenLabs Sound Effects** (o
 | `hit_light.mp3` | `Retro arcade punch impact sound, fast fleshy slap thump, beat 'em up hit, 0.2 seconds` |
 | `hit_heavy.mp3` | `Heavy retro arcade kick impact, deep punchy thud with crunch, beat 'em up hit, 0.3 seconds` |
 | `whoosh.mp3` | `Fast air swish of a missed punch, short whoosh, 0.25 seconds` |
-| `body_fall.mp3` | `Body falling on asphalt, heavy dull thud, 0.4 seconds` |
+| `body_fall.mp3` | `Body falling on a city sidewalk, heavy dull thud, 0.4 seconds` |
 | `item_drop.mp3` | `Retro 8-bit item appears sparkle chime, short, 0.4 seconds` |
 | `item_pickup.mp3` | `Retro 8-bit item pickup sound, quick rising coin-like blip, 0.3 seconds` |
 | `level_up.mp3` | `Retro 8-bit level up jingle, fast rising arpeggio, bright, 1 second` |
@@ -121,7 +143,7 @@ Suggested tools: **Suno** or **Udio** for music, **ElevenLabs Sound Effects** (o
 | File | Prompt |
 |---|---|
 | `woman_scream.mp3` | `Young woman short frightened scream "ah!" and gasp, 0.8 seconds` |
-| `old_man_grumble.mp3` | `Old man annoyed grumble "hrmph, kids these days" mumbling, 1.2 seconds` |
+| `old_man_grumble.mp3` | `Old man annoyed wordless grumble "hrmph" and mumbling, 1.2 seconds` |
 | `homeless_mutter.mp3` | `Raspy old homeless man startled mutter "whoa whoa", 0.8 seconds` |
 | `cat_hiss.mp3` | `Angry alley cat hiss and short yowl, 0.7 seconds` |
 | `rat_squeak.mp3` | `Small rat fast squeaks while scurrying, 0.5 seconds` |
