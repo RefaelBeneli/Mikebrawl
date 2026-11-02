@@ -68,6 +68,15 @@ test("every sound id used by content exists", () => {
   used.forEach((id) => assert.ok(sounds[id], `missing sound "${id}"`));
 });
 
+test("music file mix settings are sane", () => {
+  Object.entries(music).forEach(([id, def]) => {
+    if (def.volume !== undefined) assert.ok(def.volume > 0 && def.volume <= 2, `${id}: volume ${def.volume}`);
+    if (def.loopEnd === undefined) return;
+    assert.ok(def.loop, `${id}: loop points on a one-shot track`);
+    assert.ok(def.loopStart >= 0 && def.loopStart < def.loopEnd, `${id}: loop ${def.loopStart}..${def.loopEnd}`);
+  });
+});
+
 test("every music id used by levels exists", () => {
   registry.levels.forEach((level) => {
     assert.ok(music[level.music], `${level.id}: missing music ${level.music}`);

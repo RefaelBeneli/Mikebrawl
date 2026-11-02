@@ -186,6 +186,21 @@ const songs = {
   },
 };
 
+// Per-file mix for the MP3s: volume evens out loudness; loopStart/loopEnd (seconds) skip fades and trailing silence.
+// The first play still starts at 0, so an intro before loopStart is heard once.
+const files = {
+  title: { volume: 0.32, loopStart: 6, loopEnd: 108.25 },
+  level1: { volume: 0.47, loopStart: 0, loopEnd: 58.25 },
+  level2: { volume: 0.28, loopStart: 10.25, loopEnd: 189.25 },
+  level3: { volume: 0.62, loopStart: 0, loopEnd: 76 },
+  boss: { volume: 0.71, loopStart: 0, loopEnd: 232.25 },
+  victory: { volume: 0.87 },
+  gameover: { volume: 0.94 },
+};
+
 export default Object.fromEntries(
-  Object.entries(songs).map(([id, song]) => [id, { file: `assets/audio/music/${id}.mp3`, loop: song.loop !== false, song }]),
+  Object.entries(songs).map(([id, song]) => [
+    id,
+    { file: `assets/audio/music/${id}.mp3`, loop: song.loop !== false, song, ...files[id] },
+  ]),
 );

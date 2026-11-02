@@ -1,5 +1,5 @@
 // Offline support. Bump CACHE when shipping a new version so old files are dropped.
-const CACHE = "mikebrawl-v4";
+const CACHE = "mikebrawl-v5";
 
 const sameOrigin = (url) => new URL(url, self.location.href).origin === self.location.origin;
 
@@ -21,6 +21,9 @@ self.addEventListener("message", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => Promise.all(urls.map((url) => cache.add(url).catch(() => null)))));
 });
 
+// Big art/audio files under assets/ only change with a CACHE bump, so they skip the background refresh.
+const isAsset = (url) => new URL(url).pathname.includes("/assets/");
+
 // Serve from cache right away, refresh the cached copy in the background.
 self.addEventListener("fetch", (event) => {
   const { request } = event;
@@ -28,6 +31,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.open(CACHE).then(async (cache) => {
       const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached && isAsset(request.url)) return cached;
       const network = fetch(request)
         .then((response) => {
           if (response.ok) cache.put(request, response.clone());

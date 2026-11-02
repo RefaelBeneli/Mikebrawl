@@ -175,6 +175,11 @@ export function createAudio({ sounds, music }) {
       const source = ctx.createBufferSource();
       source.buffer = buffer;
       source.loop = loop;
+      if (loop && def.loopEnd) {
+        source.loopStart = def.loopStart ?? 0;
+        source.loopEnd = def.loopEnd;
+      }
+      gain.gain.value = def.volume ?? 1;
       source.connect(gain);
       source.start();
       current = { id, gain, synth: false, stop: () => source.stop() };
