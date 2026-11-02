@@ -39,7 +39,7 @@ Everything is data in `data/`, wired together in `data/registry.js`. The registr
 Every sprite and sound has a placeholder drawn or synthesized in code. Drop real files at the paths below and they are used automatically:
 
 - Sprites: walkthrough in `docs/sprites/GUIDE.md`, Nano Banana prompts in `docs/sprites/prompts.md`. Each file is a row of poses on flat pink; the game cuts, sizes and aligns them. Check them at `tools/sprite-check.html`.
-- Audio: built-in code-made music and sounds; optional free MP3 walkthrough in `docs/audio/prompts.md` (MP3 files go in `assets/audio/music/` and `assets/audio/sfx/`).
+- Audio: music in `assets/audio/music/` (made with Gemini); hit and menu sounds in `assets/audio/sfx/` from [Kenney.nl](https://kenney.nl) (CC0). Anything missing falls back to code-made sound.
 
 ## Publish
 

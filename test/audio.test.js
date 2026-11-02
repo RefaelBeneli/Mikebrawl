@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { noteToFrequency, parsePattern, stepNotes, transpose } from "../src/engine/chiptune.js";
 import sounds from "../data/sounds.js";
 import music from "../data/music.js";
@@ -66,6 +67,12 @@ test("every sound id used by content exists", () => {
     "level_up",
   ];
   used.forEach((id) => assert.ok(sounds[id], `missing sound "${id}"`));
+});
+
+test("every recorded sound file listed in data/sounds.js exists", () => {
+  Object.entries(sounds).forEach(([id, def]) => {
+    def.files.forEach((file) => assert.ok(existsSync(new URL(`../${file}`, import.meta.url)), `${id}: missing ${file}`));
+  });
 });
 
 test("music file mix settings are sane", () => {

@@ -69,6 +69,7 @@ export function playLayer(ctx, noise, layer, destination, start, rate = 1) {
 export function createAudio({ sounds, music }) {
   const settings = loadSettings();
   const buffers = new Map();
+  const sfxBuffers = new Map();
   const lastPlayed = new Map();
   let ctx = null;
   let buses = null;
@@ -92,12 +93,15 @@ export function createAudio({ sounds, music }) {
   }
 
   function loadFiles() {
-    const entries = [...Object.entries(sounds), ...Object.entries(music).map(([id, def]) => [`music:${id}`, def])];
-    entries.forEach(async ([key, def]) => {
+    Object.entries(sounds).forEach(async ([id, def]) => {
+      const loaded = (await Promise.all((def.files ?? []).map((url) => loadBuffer(ctx, url)))).filter(Boolean);
+      if (loaded.length) sfxBuffers.set(id, loaded);
+    });
+    Object.entries(music).forEach(async ([id, def]) => {
       if (!def.file) return;
       const buffer = await loadBuffer(ctx, def.file);
-      if (buffer) buffers.set(key, buffer);
-      if (buffer && key === `music:${wantedTrack}` && current?.synth) startTrack(wantedTrack);
+      if (buffer) buffers.set(`music:${id}`, buffer);
+      if (buffer && id === wantedTrack && current?.synth) startTrack(wantedTrack);
     });
   }
 
@@ -142,15 +146,17 @@ export function createAudio({ sounds, music }) {
     if (now - (lastPlayed.get(id) ?? -1) < 1 / MAX_SFX_PER_ID_PER_SECOND) return;
     lastPlayed.set(id, now);
     const rate = 1 + (Math.random() * 2 - 1) * (def.jitter ?? 0);
-    const buffer = buffers.get(id);
-    if (!buffer) {
+    const variants = sfxBuffers.get(id);
+    if (!variants) {
       playSynth(def.synth, rate);
       return;
     }
     const source = ctx.createBufferSource();
-    source.buffer = buffer;
+    source.buffer = variants[Math.floor(Math.random() * variants.length)];
     source.playbackRate.value = rate;
-    source.connect(buses.sfx);
+    const gain = ctx.createGain();
+    gain.gain.value = def.volume ?? 1;
+    source.connect(gain).connect(buses.sfx);
     source.start();
   }
 
