@@ -87,10 +87,15 @@ const defs = {
   ui_denied: { synth: [tone("square", 200, 150, 0.2, 0.09, 0, { filter: { type: "lowpass", freq: 1200 } })] },
 };
 
-// Recorded files (Kenney.nl packs, CC0). One variant plays at random; volume matches them to the code-made sounds.
+// Recorded files: hits/menus from Kenney.nl packs (CC0), voices recorded for the game.
+// One variant plays at random; volume matches them to the code-made sounds.
 // Ids not listed here use the code-made sound.
 const sfx = (name) => `assets/audio/sfx/${name}.wav`;
 const variants = (id, count) => Array.from({ length: count }, (_, i) => sfx(`${id}_${i + 1}`));
+// The voice recordings peak near full scale, so they play well below 1.
+const VOICE_VOLUME = 0.35;
+const voices = (volume, counts) =>
+  Object.fromEntries(Object.entries(counts).map(([id, count]) => [id, { files: variants(id, count), volume }]));
 const recorded = {
   hit_light: { files: variants("hit_light", 5), volume: 0.6 },
   hit_heavy: { files: variants("hit_heavy", 5), volume: 0.65 },
@@ -100,6 +105,33 @@ const recorded = {
   ui_denied: { files: [sfx("ui_denied")], volume: 0.45 },
   item_drop: { files: [sfx("item_drop")], volume: 0.9 },
   item_pickup: { files: [sfx("item_pickup")], volume: 0.45 },
+  ...voices(VOICE_VOLUME, {
+    mike_punch: 2,
+    mike_kick: 2,
+    mike_hurt: 2,
+    mike_knockdown: 1,
+    thug_taunt: 1,
+    thug_hurt: 2,
+    thug_ko: 1,
+    runner_taunt: 1,
+    runner_hurt: 2,
+    runner_ko: 1,
+    big_tony_intro: 1,
+    big_tony_hurt: 1,
+    big_tony_enrage: 1,
+    big_tony_ko: 1,
+    viper_intro: 1,
+    viper_hurt: 1,
+    viper_enrage: 1,
+    viper_ko: 1,
+    the_chief_intro: 1,
+    the_chief_hurt: 1,
+    the_chief_enrage: 1,
+    the_chief_ko: 1,
+    woman_scream: 1,
+    old_man_grumble: 1,
+    homeless_mutter: 1,
+  }),
 };
 
 export default Object.fromEntries(Object.entries(defs).map(([id, def]) => [id, { files: [], ...recorded[id], ...def }]));
