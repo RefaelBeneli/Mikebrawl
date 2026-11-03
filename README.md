@@ -4,6 +4,8 @@ Mike walks home from the gym. Criminals block the street. A mobile-first, Golden
 
 Plain JavaScript modules. No build step, no npm dependencies.
 
+**Want to help?** Read [CONTRIBUTING.md](CONTRIBUTING.md). It has everything you (or your coding agent) need: how the game works, and step-by-step recipes for new levels, enemies, bosses, NPCs, items, sprites, music and sounds.
+
 ## Run it
 
 ```sh

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mikebrawl: record voices on Android</title>
+<style>
+  :root {
+    --bg: #14121a; --card: #211d2b; --text: #f1edf7; --muted: #a89fb8;
+    --accent: #ffb43c; --ok: #3ccf7a; --code: #0f0d14;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px 14px 48px; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right));
+  }
+  main { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 4px 0 6px; }
+  h2 { font-size: 1.15rem; margin: 30px 0 10px; color: var(--accent); }
+  .muted { color: var(--muted); font-size: 0.92rem; }
+  ol, ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); }
+  code { background: var(--code); padding: 1px 6px; border-radius: 6px; font-size: 0.9em; }
+  .card { background: var(--card); border-radius: 14px; padding: 14px; margin: 12px 0; }
+  .card header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 6px; }
+  .file { font-weight: 700; font-family: ui-monospace, Menlo, monospace; }
+  .who { color: var(--muted); font-size: 0.9rem; }
+  .card ol { counter-reset: none; }
+  .card li b { color: var(--accent); }
+  .note { border-left: 4px solid var(--accent); padding: 8px 12px; background: var(--card); border-radius: 0 10px 10px 0; }
+  .check { list-style: none; padding-left: 0; }
+  .check li::before { content: "✓ "; color: var(--ok); font-weight: 700; }
+  @media (min-width: 720px) { body { padding-top: 32px; } h1 { font-size: 1.9rem; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Record the voices</h1>
+  <p class="muted">About 15 minutes. You record one clip per character, with a short pause between sounds. I cut each clip into separate sounds and add them to the game.</p>
+
+  <h2>Before you start: free sound packs</h2>
+  <p>For hits and menu sounds, download these two zips (free, no account, no credit needed) and put them in <code>~/Downloads/audio</code>:</p>
+  <ul>
+    <li><a href="https://kenney.nl/assets/impact-sounds">Kenney Impact Sounds</a></li>
+    <li><a href="https://kenney.nl/assets/interface-sounds">Kenney Interface Sounds</a></li>
+  </ul>
+  <p class="muted">On each page, tap <b>Download</b>. If it asks for a donation, you can skip it: the packs are free.</p>
+
+  <h2>Step 1: Set up</h2>
+  <ol>
+    <li>Find a quiet room: no fan, no TV, door closed.</li>
+    <li>Open your phone's recorder app: <b>Voice Recorder</b> on Samsung, <b>Recorder</b> on Pixel. Any recorder app works.</li>
+    <li>Samsung: tap <b>⋮ → Settings → Recording quality → High</b>. Pixel: nothing to set.</li>
+    <li>Hold the phone about a hand's length (20 cm) from your mouth, microphone (bottom of the phone) facing you.</li>
+    <li>Shouts: turn your face a little to the side, so they don't distort.</li>
+  </ol>
+
+  <h2>Step 2: How to record each clip</h2>
+  <ol>
+    <li>Tap the record button.</li>
+    <li>Make the sounds <b>in the exact order</b> on the card.</li>
+    <li>After each sound, stay silent for <b>2 seconds</b> (count "one, two" in your head).</li>
+    <li>Tap stop and save it with the name on the card (e.g. <code>mike</code>).</li>
+  </ol>
+  <p class="note"><b>No words.</b> Grunts, shouts and laughs only. Overdo it: game voices sound best when they are big and short.</p>
+
+  <section class="card">
+    <header><span class="file">mike</span><span class="who">Mike: your normal voice, tough and confident</span></header>
+    <ol>
+      <li><b>Punch:</b> short sharp "hah!"</li>
+      <li><b>Punch:</b> another "hah!", a little different</li>
+      <li><b>Kick:</b> longer "hyaa!"</li>
+      <li><b>Kick:</b> another "hyaa!"</li>
+      <li><b>Hit:</b> short pained "ugh!"</li>
+      <li><b>Hit:</b> another "oof!"</li>
+      <li><b>Knocked down:</b> long falling groan "aaahh…"</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">thug</span><span class="who">Thug: big, slow, deep voice (push your voice low)</span></header>
+    <ol>
+      <li><b>Taunt:</b> mocking low laugh "heh heh heh"</li>
+      <li><b>Hit:</b> short low grunt "hrgh!"</li>
+      <li><b>Hit:</b> another low grunt</li>
+      <li><b>Knocked out:</b> long low groan</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">runner</span><span class="who">Runner: skinny, fast, higher voice</span></header>
+    <ol>
+      <li><b>Taunt:</b> cheeky two-note whistle (up, then down)</li>
+      <li><b>Hit:</b> short high yelp "yip!"</li>
+      <li><b>Hit:</b> another yelp</li>
+      <li><b>Knocked out:</b> long falling cry "waaah…"</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">big_tony</span><span class="who">Big Tony (boss): huge, very deep, slow</span></header>
+    <ol>
+      <li><b>Intro:</b> slow threatening growl "hrrrmmm"</li>
+      <li><b>Hit:</b> short deep grunt</li>
+      <li><b>Angry:</b> roar that gets louder "rrraaAAH!"</li>
+      <li><b>Knocked out:</b> long heavy groan</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">viper</span><span class="who">Viper (boss): fast, sly, sharp voice</span></header>
+    <ol>
+      <li><b>Intro:</b> hissing snicker "sss-heh-heh"</li>
+      <li><b>Hit:</b> short sharp grunt "tch!"</li>
+      <li><b>Angry:</b> hiss that turns into a shout "ssssHAH!"</li>
+      <li><b>Knocked out:</b> long cry</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">the_chief</span><span class="who">The Chief (final boss): older, raspy, in charge</span></header>
+    <ol>
+      <li><b>Intro:</b> cold low laugh "hm-hm-hm"</li>
+      <li><b>Hit:</b> short raspy grunt</li>
+      <li><b>Angry:</b> furious roar that rises</li>
+      <li><b>Knocked out:</b> long raspy groan</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <header><span class="file">people</span><span class="who">People on the street (ask a friend for the scream, or skip it)</span></header>
+    <ol>
+      <li><b>Woman:</b> short startled scream</li>
+      <li><b>Old man:</b> annoyed grumble "hmph, mmh-mm"</li>
+      <li><b>Tired man:</b> quiet sleepy mutter "mmh… mm…"</li>
+    </ol>
+  </section>
+
+  <p class="muted">Any card you skip keeps its built-in sound. Cat and rat sounds stay built-in.</p>
+
+  <h2>Step 3: Send them to the Mac</h2>
+  <ol>
+    <li>In the recorder app, select all the clips → <b>Share</b> → <b>Drive</b> (Google Drive) → upload.</li>
+    <li>On the Mac, open <a href="https://drive.google.com">drive.google.com</a>, select the clips → <b>Download</b>.</li>
+    <li>Move the files (or the zip Drive makes) into <code>~/Downloads/audio</code>.</li>
+    <li>Tell me. I cut, name, set the volume, and you listen before it goes live.</li>
+  </ol>
+
+  <h2>Quick check before sending</h2>
+  <ul class="check">
+    <li>Each clip has the sounds in the card order.</li>
+    <li>There's a clear 2-second silence between sounds.</li>
+    <li>Nothing sounds crackly (if it does, record again a bit further away).</li>
+    <li>File names match the cards: <code>mike</code>, <code>thug</code>, <code>runner</code>…</li>
+  </ul>
+</main>
+</body>
+</html>
